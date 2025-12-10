@@ -1,0 +1,37 @@
+esto conecta los IDs según el orden insertado
+
+IDs de enfermedades en orden de inserción
+
+1 Gripe
+2 Resfriado
+3 Diabetes
+4 COVID-19
+5 Varicela
+6 Migraña
+7 Alergia
+8 Hipotiroidismo
+9 Gastroenteritis
+10 Faringitis
+
+IDs de síntomas en orden
+
+1 fiebre
+2 tos
+3 dolor_cabeza
+4 dolor_muscular
+5 estornudos
+6 dolor_garganta
+7 sed
+8 cansancio
+9 perdida_peso
+10 perdida_gusto_olfato
+11 erupcion
+12 picazon
+13 nausea
+14 sensibilidad_luz
+15 ojos_lagrimosos
+16 aumento_peso
+17 piel_seca
+18 vomito
+19 diarrea
+20 dolor_abdominal
