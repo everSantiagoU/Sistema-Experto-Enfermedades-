@@ -1,0 +1,5 @@
+ProyectoSistemaExperto\models\Diagnostico.class
+ProyectoSistemaExperto\models\EstadisticaEnfermedad.class
+ProyectoSistemaExperto\models\MainPruebaClases.class
+ProyectoSistemaExperto\models\Paciente.class
+ProyectoSistemaExperto\models\Enfermedad.class
