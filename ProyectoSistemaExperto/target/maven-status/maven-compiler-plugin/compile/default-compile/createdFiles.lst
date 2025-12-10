@@ -1,3 +1,4 @@
+ProyectoSistemaExperto\models\PruebaPL.class
 ProyectoSistemaExperto\models\Diagnostico.class
 ProyectoSistemaExperto\models\EstadisticaEnfermedad.class
 ProyectoSistemaExperto\models\MainPruebaClases.class
