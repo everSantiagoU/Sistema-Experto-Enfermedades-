@@ -30,10 +30,3 @@ enfermedades_por_sintoma(Sintoma, Enfermedad) :-
     enfermedad(Enfermedad, ListaSintomas, _, _), 
     member(Sintoma, ListaSintomas).
 
-% Hechos de enfermedades
-enfermedad(gripe, [fiebre, tos], respiratoria, ["descanso", "hidratar", "consultar"]).
-enfermedad(covid, [fiebre, tos, fatiga], respiratoria, ["aislamiento", "consultar medico"]).
-enfermedad(sida, [gripa, diarrea, fiebre], virus, ["descanso", "hidratar", "consultar"]).
-enfermedad(gonorrea, [dolor, diarrea, vomito, fiebre], virus, ["descanso", "hidratar", "consultar"]).
-enfermedad(diabetes, [sed, cansancio], cronica, ["control medico"]).
-enfermedad(hipertension, [dolor_cabeza], cronica, ["dieta", "medicacion"]).
