@@ -1,3 +1,4 @@
+%ProyectoSistemaExperto\src\main\resources reglas.pl
 % Reglas que esperan: enfermedad(nombre, categoria) + sintoma(sintoma, enfermedad)
 
 % 1. coincide_sintomas: verifica que TODOS los síntomas coincidan
