@@ -1,5 +1,6 @@
 package ProyectoSistemaExperto.views;
 
+import ProyectoSistemaExperto.DAO.EnfermedadDAO; // <--- Importamos el DAO de Enfermedades
 import ProyectoSistemaExperto.DAO.PacienteDAO;
 import ProyectoSistemaExperto.models.Paciente;
 
@@ -10,6 +11,7 @@ import java.util.List;
 
 /**
  * Ventana para registrar un nuevo paciente en la Base de Datos MySQL.
+ * Actualizado: Carga dinámica de síntomas.
  * @author EVER URIBE
  */
 public class RegistroPaciente extends JFrame {
@@ -22,9 +24,8 @@ public class RegistroPaciente extends JFrame {
         setTitle("Registro de Paciente");
         setSize(600, 600);
         setLocationRelativeTo(null);
-        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE); // Cierra solo esta ventana
+        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE); 
 
-        // Usamos BorderLayout con espaciado
         setLayout(new BorderLayout(15, 15));
 
         // =======================================================
@@ -50,36 +51,42 @@ public class RegistroPaciente extends JFrame {
         panelDatos.add(txtNombre);
 
         panelDatos.add(new JLabel("Edad:"));
-        spEdad = new JSpinner(new SpinnerNumberModel(18, 0, 120, 1)); // Edad mínima 0, máxima 120
+        spEdad = new JSpinner(new SpinnerNumberModel(18, 0, 120, 1)); 
         panelDatos.add(spEdad);
 
         panelCentral.add(panelDatos, BorderLayout.NORTH);
 
-        // ---------------------- SÍNTOMAS ---------------------
+        // ---------------------- SÍNTOMAS (DINÁMICO) ---------------------
         JPanel panelSintomas = new JPanel();
         panelSintomas.setLayout(new GridLayout(0, 2, 5, 5));
         panelSintomas.setBorder(BorderFactory.createTitledBorder("Seleccione los síntomas que presenta"));
 
-        // Lista de síntomas idéntica a tu base de datos (inserts.sql)
-        String[] sintomas = {
-                "fiebre", "tos", "dolor_cabeza", "dolor_muscular",
-                "estornudos", "dolor_garganta", "sed", "cansancio",
-                "perdida_peso", "perdida_gusto_olfato", "erupcion", "picazon",
-                "nausea", "sensibilidad_luz", "ojos_lagrimosos", "aumento_peso",
-                "piel_seca", "vomito", "diarrea", "dolor_abdominal"
-        };
-
         checkboxes = new ArrayList<>();
 
-        for (String s : sintomas) {
-            JCheckBox cb = new JCheckBox(s);
-            checkboxes.add(cb);
-            panelSintomas.add(cb);
+        // --- CAMBIO PRINCIPAL AQUÍ ---
+        // En lugar de una lista fija, consultamos la BD
+        try {
+            EnfermedadDAO enfermedadDAO = new EnfermedadDAO();
+            List<String> sintomasBD = enfermedadDAO.obtenerTodosLosSintomas();
+
+            if (sintomasBD.isEmpty()) {
+                panelSintomas.add(new JLabel("No hay síntomas registrados en la BD."));
+            } else {
+                for (String s : sintomasBD) {
+                    JCheckBox cb = new JCheckBox(s);
+                    checkboxes.add(cb);
+                    panelSintomas.add(cb);
+                }
+            }
+        } catch (Exception e) {
+            panelSintomas.add(new JLabel("Error cargando síntomas."));
+            System.err.println("Error UI: " + e.getMessage());
         }
+        // -----------------------------
 
         JScrollPane scroll = new JScrollPane(panelSintomas);
         scroll.setPreferredSize(new Dimension(400, 350));
-        scroll.getVerticalScrollBar().setUnitIncrement(16); // Scroll más rápido/suave
+        scroll.getVerticalScrollBar().setUnitIncrement(16); 
         panelCentral.add(scroll, BorderLayout.CENTER);
 
         // =======================================================

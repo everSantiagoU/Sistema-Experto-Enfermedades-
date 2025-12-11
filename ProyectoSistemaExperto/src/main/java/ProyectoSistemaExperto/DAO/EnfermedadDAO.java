@@ -142,4 +142,48 @@ public class EnfermedadDAO {
             } catch (SQLException e) { e.printStackTrace(); }
         }
     }
+    
+    public List<String> obtenerTodosLosSintomas() {
+        List<String> lista = new ArrayList<>();
+        String sql = "SELECT nombre FROM sintoma ORDER BY nombre ASC";
+
+        try (PreparedStatement ps = connection.prepareStatement(sql);
+             ResultSet rs = ps.executeQuery()) {
+
+            while (rs.next()) {
+                lista.add(rs.getString("nombre"));
+            }
+        } catch (SQLException e) {
+            System.err.println("Error cargando síntomas: " + e.getMessage());
+        }
+        return lista;
+    }
+    
+    public boolean registrarSintoma(String nombre) {
+        String sqlCheck = "SELECT id_sintoma FROM sintoma WHERE nombre = ?";
+        String sqlInsert = "INSERT INTO sintoma (nombre) VALUES (?)";
+        
+        nombre = nombre.toLowerCase().trim();
+        if (nombre.isEmpty()) return false;
+
+        try {
+            // 1. Verificar si ya existe para no duplicar
+            try (PreparedStatement ps = connection.prepareStatement(sqlCheck)) {
+                ps.setString(1, nombre);
+                try (ResultSet rs = ps.executeQuery()) {
+                    if (rs.next()) return false; // Ya existe, retornamos false o manejamos aviso
+                }
+            }
+            
+            // 2. Insertar
+            try (PreparedStatement ps = connection.prepareStatement(sqlInsert)) {
+                ps.setString(1, nombre);
+                ps.executeUpdate();
+                return true;
+            }
+        } catch (SQLException e) {
+            System.err.println("Error registrando síntoma: " + e.getMessage());
+            return false;
+        }
+    }
 }

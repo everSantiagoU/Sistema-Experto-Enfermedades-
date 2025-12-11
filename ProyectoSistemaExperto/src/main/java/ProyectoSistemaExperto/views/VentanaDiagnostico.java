@@ -23,39 +23,39 @@ public class VentanaDiagnostico extends JFrame {
     private JTextField txtIdPaciente;
     private JLabel lblNombrePaciente;
     
-    // Lógic
+    // Lógica
     private MotorInferencia motor;
     private List<Enfermedad> todasLasEnfermedades;
     private Paciente pacienteActual; // El paciente al que estamos diagnosticando
 
-    // Default constructor for principal menu
+    // Constructor por defecto
     public VentanaDiagnostico() {
-        this(null); // Llama al constructor principal sin paciente
+        this(null); 
     }
 
-    // Principal constructor it allow to receive a patiente that is alredy laoded
+    // Constructor principal
     public VentanaDiagnostico(Paciente paciente) {
         this.pacienteActual = paciente;
         inicializarLogica();
         inicializarInterfaz();
         
-        // IU is updatedt automatically
+        // Actualizar UI si recibimos paciente
         if (pacienteActual != null) {
             txtIdPaciente.setText(String.valueOf(pacienteActual.getIdPaciente()));
             lblNombrePaciente.setText("Paciente: " + pacienteActual.getNombre());
-            txtIdPaciente.setEnabled(false); // Bloqueamos para no cambiarlo accidentalmente
+            txtIdPaciente.setEnabled(false); 
         }
     }
 
     private void inicializarLogica() {
         try {
-            // load diseases
+            // Cargar enfermedades desde BD
             EnfermedadDAO dao = new EnfermedadDAO();
             todasLasEnfermedades = dao.obtenerEnfermedades();
             
-            // start motor and conocimientos
+            // Iniciar Motor y cargar conocimientos
             motor = new MotorInferencia();
-            motor.limpiarBD(); // clean
+            motor.limpiarBD(); 
             for (Enfermedad e : todasLasEnfermedades) {
                 motor.agregarEnfermedad(e);
             }
@@ -73,10 +73,9 @@ public class VentanaDiagnostico extends JFrame {
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setLayout(new BorderLayout(10, 10));
 
-
+        // --- PANEL SUPERIOR ---
         JPanel panelSuperior = new JPanel(new GridLayout(2, 1));
         
-
         JPanel panelPaciente = new JPanel(new FlowLayout(FlowLayout.LEFT));
         panelPaciente.setBorder(BorderFactory.createTitledBorder("Datos del Paciente"));
         
@@ -101,7 +100,7 @@ public class VentanaDiagnostico extends JFrame {
         comboCategoria.addItem("viral");
         comboCategoria.addItem("crónica");
         comboCategoria.addItem("alergia");
-        comboCategoria.addItem("bacteriana"); // Asegúrate que coincida con tus inserts.sql
+        comboCategoria.addItem("bacteriana"); 
         
         JButton btnDiagnosticar = new JButton("EJECUTAR DIAGNÓSTICO");
         btnDiagnosticar.setBackground(new Color(0, 153, 76)); // Verde
@@ -117,30 +116,36 @@ public class VentanaDiagnostico extends JFrame {
         panelSuperior.add(panelFiltros);
         add(panelSuperior, BorderLayout.NORTH);
 
-
+        // --- PANEL SÍNTOMAS (DINÁMICO) ---
         panelSintomas = new JPanel();
-        panelSintomas.setLayout(new GridLayout(0, 1)); // 1 column n filas
+        panelSintomas.setLayout(new GridLayout(0, 1)); 
         panelSintomas.setBorder(BorderFactory.createTitledBorder("Seleccione Síntomas"));
 
+        // --- CAMBIO AQUÍ: Cargar síntomas desde BD ---
+        try {
+            EnfermedadDAO daoSintomas = new EnfermedadDAO();
+            List<String> listadoSintomas = daoSintomas.obtenerTodosLosSintomas();
 
-        String[] listadoSintomas = {
-            "fiebre", "tos", "dolor_cabeza", "dolor_muscular", "estornudos", 
-            "dolor_garganta", "sed", "cansancio", "perdida_peso", 
-            "perdida_gusto_olfato", "erupcion", "picazon", "nausea", 
-            "sensibilidad_luz", "ojos_lagrimosos", "aumento_peso", "piel_seca", 
-            "vomito", "diarrea", "dolor_abdominal"
-        };
-
-        for (String s : listadoSintomas) {
-            JCheckBox chk = new JCheckBox(s);
-            panelSintomas.add(chk);
+            if (listadoSintomas.isEmpty()) {
+                panelSintomas.add(new JLabel("No hay síntomas registrados."));
+            } else {
+                for (String s : listadoSintomas) {
+                    JCheckBox chk = new JCheckBox(s);
+                    panelSintomas.add(chk);
+                }
+            }
+        } catch (Exception e) {
+            panelSintomas.add(new JLabel("Error cargando síntomas"));
+            e.printStackTrace();
         }
+        // ---------------------------------------------
 
         JScrollPane scrollSintomas = new JScrollPane(panelSintomas);
         scrollSintomas.setPreferredSize(new Dimension(250, 0));
         scrollSintomas.getVerticalScrollBar().setUnitIncrement(16);
         add(scrollSintomas, BorderLayout.WEST);
 
+        // --- TABLA RESULTADOS ---
         tablaResultados = new JTable(new DefaultTableModel(
                 new Object[]{"Enfermedad", "Categoría", "Coincidencias", "Recomendación"}, 0
         ));
@@ -148,21 +153,22 @@ public class VentanaDiagnostico extends JFrame {
         JScrollPane scrollTabla = new JScrollPane(tablaResultados);
         add(scrollTabla, BorderLayout.CENTER);
 
-
-        JPanel panelSur = new JPanel(new FlowLayout(FlowLayout.CENTER)); // Centrado
-        panelSur.setBorder(BorderFactory.createEmptyBorder(15, 0, 15, 0)); // Margen arriba/abajo
+        // --- PANEL INFERIOR ---
+        JPanel panelSur = new JPanel(new FlowLayout(FlowLayout.CENTER)); 
+        panelSur.setBorder(BorderFactory.createEmptyBorder(15, 0, 15, 0)); 
 
         JButton btnGuardar = new JButton("GUARDAR DIAGNÓSTICO SELECCIONADO");
-        btnGuardar.setFont(new Font("SansSerif", Font.BOLD, 16)); // Letra grande
+        btnGuardar.setFont(new Font("SansSerif", Font.BOLD, 16)); 
         btnGuardar.setBackground(new Color(0, 102, 204)); // Azul intenso
-        btnGuardar.setForeground(Color.WHITE); // Texto blanco
-        btnGuardar.setFocusPainted(false); // Quitar borde de foco al hacer clic
-        btnGuardar.setCursor(new Cursor(Cursor.HAND_CURSOR)); // Cursor de mano
-        btnGuardar.setPreferredSize(new Dimension(450, 50)); // Botón ancho y alto
+        btnGuardar.setForeground(Color.WHITE); 
+        btnGuardar.setFocusPainted(false); 
+        btnGuardar.setCursor(new Cursor(Cursor.HAND_CURSOR)); 
+        btnGuardar.setPreferredSize(new Dimension(450, 50)); 
         
         panelSur.add(btnGuardar);
         add(panelSur, BorderLayout.SOUTH);
 
+        // Eventos
         btnBuscar.addActionListener(e -> buscarPaciente());
         btnDiagnosticar.addActionListener(e -> generarDiagnostico());
         btnGuardar.addActionListener(e -> guardarDiagnosticoBD());
@@ -192,7 +198,6 @@ public class VentanaDiagnostico extends JFrame {
     }
 
     private void generarDiagnostico() {
-        // recieve sympthomns selected
         List<String> seleccionados = new ArrayList<>();
         for (Component c : panelSintomas.getComponents()) {
             if (c instanceof JCheckBox) {
@@ -207,13 +212,12 @@ public class VentanaDiagnostico extends JFrame {
         }
 
         List<String> resultadosMotor = motor.diagnosticar(seleccionados);
-
         
         String catFiltro = (String) comboCategoria.getSelectedItem();
         boolean filtrar = !"Todas".equalsIgnoreCase(catFiltro);
 
         DefaultTableModel model = (DefaultTableModel) tablaResultados.getModel();
-        model.setRowCount(0); // Limpiar
+        model.setRowCount(0); 
 
         boolean huboResultados = false;
 
