@@ -26,9 +26,7 @@ import java.util.ArrayList;
 
 public class PacienteDAO {
 
-    /**
-     * registra un nuevo paciente en la base de datos y retorna su id
-     */
+
     public int registrar(Paciente paciente) {
         String sql = "INSERT INTO paciente (nombre, edad) VALUES (?, ?)";
         int idGenerado = -1;
@@ -45,14 +43,13 @@ public class PacienteDAO {
                 try (ResultSet rs = pstmt.getGeneratedKeys()) {
                     if (rs.next()) {
                         idGenerado = rs.getInt(1);
-                        // VINCULACIÓN CORRECTA: Actualizamos el objeto Java con el ID de la BD
+                        // Vinculacion buena entonces Actualizamos el objeto Java con el ID de la BD
                         paciente.setIdPaciente(idGenerado);
                     }
                 }
             }
         } catch (SQLException e) {
             System.err.println("Error al registrar paciente: " + e.getMessage());
-            // No imprimimos stackTrace completo para no ensuciar la prueba, pero puedes dejarlo si gustas
         }
         return idGenerado;
     }

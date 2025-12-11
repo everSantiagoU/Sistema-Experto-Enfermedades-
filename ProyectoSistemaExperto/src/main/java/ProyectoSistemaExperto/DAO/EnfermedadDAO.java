@@ -66,7 +66,7 @@ public class EnfermedadDAO {
         return sintomas;
     }
     
-    // --- NUEVO MÉTODO PARA REGISTRAR ---
+    // Nueva enfermadad añadida
     public boolean registrarNuevaEnfermedad(Enfermedad nuevaEnfermedad) {
         String sqlEnfermedad = "INSERT INTO enfermedad (nombre, categoria, recomendacion) VALUES (?, ?, ?)";
         String sqlBuscarSintoma = "SELECT id_sintoma FROM sintoma WHERE nombre = ?";
@@ -74,10 +74,10 @@ public class EnfermedadDAO {
         String sqlRelacion = "INSERT INTO enfermedad_sintoma (id_enfermedad, id_sintoma) VALUES (?, ?)";
 
         try {
-            // Desactivar autocommit para manejar transacción
+            //
             connection.setAutoCommit(false);
 
-            // 1. Insertar Enfermedad
+            // Insertar Enfermedad
             int idEnfermedad = -1;
             try (PreparedStatement ps = connection.prepareStatement(sqlEnfermedad, Statement.RETURN_GENERATED_KEYS)) {
                 ps.setString(1, nuevaEnfermedad.getNombre());
@@ -92,12 +92,12 @@ public class EnfermedadDAO {
 
             if (idEnfermedad == -1) throw new SQLException("No se pudo obtener ID de la enfermedad.");
 
-            // 2. Procesar Síntomas
+            // Procesar Síntomas
             for (String nombreSintoma : nuevaEnfermedad.getSintomas()) {
                 int idSintoma = -1;
                 nombreSintoma = nombreSintoma.toLowerCase().trim();
 
-                // a) Buscar si existe
+                // Buscar si existe
                 try (PreparedStatement psBuscar = connection.prepareStatement(sqlBuscarSintoma)) {
                     psBuscar.setString(1, nombreSintoma);
                     try (ResultSet rs = psBuscar.executeQuery()) {
@@ -105,7 +105,7 @@ public class EnfermedadDAO {
                     }
                 }
 
-                // b) Si no existe, insertar
+                // Si no existe insertar
                 if (idSintoma == -1) {
                     try (PreparedStatement psInsert = connection.prepareStatement(sqlInsertarSintoma, Statement.RETURN_GENERATED_KEYS)) {
                         psInsert.setString(1, nombreSintoma);
@@ -116,7 +116,7 @@ public class EnfermedadDAO {
                     }
                 }
 
-                // c) Crear relación
+                // Crear relación
                 try (PreparedStatement psRel = connection.prepareStatement(sqlRelacion)) {
                     psRel.setInt(1, idEnfermedad);
                     psRel.setInt(2, idSintoma);

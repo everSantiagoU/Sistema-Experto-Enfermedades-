@@ -103,7 +103,7 @@ public class MotorInferencia {
                 new Query(consulta2).hasSolution();
             }
 
-            // agg recomendacion(nombre, ListaRecomendaciones)
+            // add recomendacion(nombre, ListaRecomendaciones)
             String listR = convertirListaProlog(e.getRecomendaciones());
             String consulta3 = String.format(
                     "assert(recomendacion('%s', %s)).",
