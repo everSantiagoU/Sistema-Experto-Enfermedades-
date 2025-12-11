@@ -27,13 +27,12 @@ import java.util.ArrayList;
 public class PacienteDAO {
 
     /**
-     * Registra un nuevo paciente en la base de datos y retorna el ID generado.
+     * registra un nuevo paciente en la base de datos y retorna su id
      */
     public int registrar(Paciente paciente) {
         String sql = "INSERT INTO paciente (nombre, edad) VALUES (?, ?)";
         int idGenerado = -1;
 
-        // Aseguramos usar ConexionDB que es la clase que corregimos previamente
         try (Connection conn = ConexionDB.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
 
@@ -58,9 +57,6 @@ public class PacienteDAO {
         return idGenerado;
     }
 
-    /**
-     * Busca un paciente por su nombre.
-     */
     public Paciente obtenerPorNombre(String nombre) {
         String sql = "SELECT id_paciente, nombre, edad FROM paciente WHERE nombre = ?";
         Paciente paciente = null;
@@ -85,9 +81,6 @@ public class PacienteDAO {
         return paciente;
     }
 
-    /**
-     * Obtiene un paciente por su ID.
-     */
     public Paciente obtenerPorId(int id) {
         String sql = "SELECT id_paciente, nombre, edad FROM paciente WHERE id_paciente = ?";
         Paciente paciente = null;

@@ -27,7 +27,7 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 
 public class ConexionDB {
-    // Usamos 'appuser' como default si no se pasan variables de entorno
+    
     private static final String URL = (System.getProperty("DB_URL") != null)
             ? System.getProperty("DB_URL")
             : System.getenv().getOrDefault("DB_URL", "jdbc:mysql://localhost:3306/sistema_experto");
@@ -45,7 +45,7 @@ public class ConexionDB {
             Class.forName("com.mysql.cj.jdbc.Driver");
             return DriverManager.getConnection(URL, USER, PASS);
         } catch (Exception e) {
-            System.err.println("ERROR en la conexión MySQL: " + e.getMessage());
+            System.err.println("Error en la conexion con MySQL: " + e.getMessage());
             return null;
         }
     }
@@ -53,13 +53,13 @@ public class ConexionDB {
     public static void testConnection() {
         try (Connection conn = getConnection()) {
             if (conn != null && !conn.isClosed()) {
-                System.out.println("✓ Conexión exitosa a MySQL");
-                System.out.println("✓ Base de datos: sistema_experto");
+                System.out.println("Conexion exitosa a MySQL");
+                System.out.println("Base de datos: sistema_experto");
             } else {
-                System.err.println("✗ No se pudo establecer la conexión con las credenciales proporcionadas.");
+                System.err.println("No se pudo establecer la conexion ");
             }
         } catch (SQLException e) {
-            System.err.println("✗ Error de conexión: " + e.getMessage());
+            System.err.println(" Error de conexion: " + e.getMessage());
             e.printStackTrace();
         }
     }

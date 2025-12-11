@@ -24,17 +24,19 @@ public class VentanaBienvenida extends JFrame {
         add(titulo, BorderLayout.NORTH);
 
         JPanel panelBotones = new JPanel();
-        panelBotones.setLayout(new GridLayout(5, 1, 10, 10));
+        panelBotones.setLayout(new GridLayout(6, 1, 10, 10));
         panelBotones.setBorder(BorderFactory.createEmptyBorder(20, 100, 20, 100));
 
         JButton btnPaciente = new JButton("Registrar Paciente");
         JButton btnDiagnostico = new JButton("Generar Diagnostico");
         JButton btnHistorial = new JButton("Historial de Diagnosticos");
+        JButton btnAgregar = new JButton("Agregar Nueva Enfermedad");
         JButton btnSalir = new JButton("Salir del sistema");
 
         panelBotones.add(btnPaciente);
         panelBotones.add(btnDiagnostico);
         panelBotones.add(btnHistorial);
+        panelBotones.add(btnAgregar);
         panelBotones.add(btnSalir);
 
         add(panelBotones, BorderLayout.CENTER);
@@ -46,6 +48,8 @@ public class VentanaBienvenida extends JFrame {
         btnDiagnostico.addActionListener(e -> new VentanaDiagnostico().setVisible(true));
         
         btnHistorial.addActionListener(e -> new VentanaHistorial().setVisible(true));
+        
+        btnAgregar.addActionListener(e -> new VentanaNuevaEnfermedad().setVisible(true));
 
         btnSalir.addActionListener(e -> System.exit(0));
     }

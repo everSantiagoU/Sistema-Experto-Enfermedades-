@@ -38,14 +38,14 @@ public class DiagnosticoDAO {
     }
 
     /**
-     * Guarda diagnóstico en MySQL
+     * Guardar diagnostico en Mysql
      */
     public boolean guardar(Diagnostico d) {
         String sql = "INSERT INTO diagnostico(id_paciente, id_enfermedad) " +
                 "VALUES (?, (SELECT id_enfermedad FROM enfermedad WHERE nombre = ? LIMIT 1))";
 
         try (PreparedStatement st = connection.prepareStatement(sql)) {
-            st.setInt(1, d.getPaciente().getIdPaciente()); // Usamos ID directo del objeto
+            st.setInt(1, d.getPaciente().getIdPaciente()); 
             st.setString(2, d.getNombreEnfermedad().getNombre());
             st.executeUpdate();
             return true;
@@ -56,9 +56,6 @@ public class DiagnosticoDAO {
         }
     }
 
-    /**
-     * Obtiene historial por ID de Paciente (Para la tabla de historial)
-     */
     public List<Diagnostico> obtenerPorIdPaciente(int idPaciente) {
         List<Diagnostico> lista = new ArrayList<>();
 
@@ -105,10 +102,7 @@ public class DiagnosticoDAO {
         return lista;
     }
 
-    /**
-     * Obtiene TODOS los diagnósticos (Para Estadísticas)
-     */
-    public List<Diagnostico> obtenerTodos() {
+    public List<Diagnostico> obtenerTodos() { //obtener todos los diagnosticos para estadisticas
         List<Diagnostico> lista = new ArrayList<>();
         String sql = "SELECT e.nombre, e.categoria FROM diagnostico d " +
                      "JOIN enfermedad e ON e.id_enfermedad = d.id_enfermedad";
@@ -120,7 +114,6 @@ public class DiagnosticoDAO {
                 Enfermedad enf = new Enfermedad();
                 enf.setNombre(rs.getString("nombre"));
                 enf.setCategoria(rs.getString("categoria"));
-                // No necesitamos mas datos para las estadisticas basicas
                 
                 Diagnostico diag = new Diagnostico(null, enf, rs.getString("categoria"), null, null);
                 lista.add(diag);

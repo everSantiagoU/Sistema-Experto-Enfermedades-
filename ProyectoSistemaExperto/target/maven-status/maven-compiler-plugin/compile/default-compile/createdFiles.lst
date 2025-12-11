@@ -1,5 +1,6 @@
 ProyectoSistemaExperto\views\ProyectoSistemaExperto.class
 ProyectoSistemaExperto\views\VentanaDiagnostico.class
+ProyectoSistemaExperto\views\VentanaNuevaEnfermedad.class
 ProyectoSistemaExperto\models\Diagnostico.class
 ProyectoSistemaExperto\DAO\ConexionDB.class
 ProyectoSistemaExperto\inferencia\MotorInferencia.class

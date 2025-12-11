@@ -55,13 +55,13 @@ public class MotorInferencia {
         cargarReglas();
     }
 
-    // Load reglas.pl from resources
+    // cargamos las reglas desde reglas.pl que esta en resourcs
     public void cargarReglas() {
         try {
             URL rulesURL = getClass().getClassLoader().getResource("reglas.pl");
 
             if (rulesURL == null) {
-                System.err.println("ERROR: reglas.pl no encontrado en resources");
+                System.err.println("Error reglas.pl no encontrado en resources");
                 return;
             }
 
@@ -72,9 +72,9 @@ public class MotorInferencia {
             cargadoConsulta = q.hasSolution();
 
             if (cargadoConsulta) {
-                System.out.println("✓ MotorInferencia: reglas.pl cargado correctamente");
+                System.out.println("MotorInferencia: reglas.pl cargado correctamente");
             } else {
-                System.err.println("✗ ERROR MotorInferencia: No se pudo cargar reglas.pl");
+                System.err.println("MotorInferencia: No se pudo cargar reglas.pl");
             }
 
             q.close();
@@ -84,17 +84,17 @@ public class MotorInferencia {
         }
     }
 
-    // Dynamic load of data (hechos)from MySQL
+    // cargar los hechos de forma dinamica desde mysql
     public void agregarEnfermedad(Enfermedad e) {
         try {
-            // add enfermedad(nombre, categoria).
+            // agg enfermedad(nombre, categoria)
             String consulta1 = String.format(
                     "assert(enfermedad('%s','%s')).",
                     e.getNombre(), e.getCategoria()
             );
             new Query(consulta1).hasSolution();
 
-            // add sintoma(nombre, enfermedad).
+            // agg sintoma(nombre, enfermedad)
             for (String s : e.getSintomas()) {
                 String consulta2 = String.format(
                         "assert(sintoma('%s','%s')).",
@@ -103,7 +103,7 @@ public class MotorInferencia {
                 new Query(consulta2).hasSolution();
             }
 
-            // add recomendacion(nombre, ListaRecomendaciones).
+            // agg recomendacion(nombre, ListaRecomendaciones)
             String listR = convertirListaProlog(e.getRecomendaciones());
             String consulta3 = String.format(
                     "assert(recomendacion('%s', %s)).",
@@ -116,18 +116,13 @@ public class MotorInferencia {
         }
     }
 
-    // Converts List<String> to Prolog: ['a','b','c']
+    // convierte lista de strings a lista de prolog
     private String convertirListaProlog(List<String> lista) {
         List<String> quoted = new ArrayList<>();
         for (String s : lista) quoted.add("'" + s.trim() + "'");
         return "[" + String.join(",", quoted) + "]";
     }
 
-    // Principal Queries
-
-    
-     // return diseases that match all of the user symptoms
-     // coincide_sintomas(Sintomas, Enfermedad)
      
     public List<String> diagnosticar(List<String> sintomas) {
         List<String> resultado = new ArrayList<>();
@@ -145,7 +140,6 @@ public class MotorInferencia {
         return resultado;
     }
 
-    // returns a disease that are from a category
     
     public List<String> diagnosticoPorCategoria(String categoria) {
         List<String> resultado = new ArrayList<>();
@@ -160,7 +154,6 @@ public class MotorInferencia {
         return resultado;
     }
 
-     // returns all the cronic diseases
 
     public List<String> enfermedadesCronicas() {
         List<String> lista = new ArrayList<>();
@@ -176,8 +169,6 @@ public class MotorInferencia {
     }
 
 
-    // Return all diseases associated with symptom
-
     public List<String> enfermedadesPorSintoma(String sintoma) {
         List<String> lista = new ArrayList<>();
 
@@ -192,7 +183,6 @@ public class MotorInferencia {
     }
 
     
-     // return the recomendation for a disease
     public List<String> recomendacion(String enfermedad) {
         List<String> lista = new ArrayList<>();
 
@@ -210,8 +200,7 @@ public class MotorInferencia {
         return lista;
     }
 
-
-    // Delete dynamic facts (hechos)
+    // eliminar los hechos de la memoria persistente de prolog 
     public void limpiarBD() {
         new Query("retractall(enfermedad(_, _)).").hasSolution();
         new Query("retractall(sintoma(_, _)).").hasSolution();

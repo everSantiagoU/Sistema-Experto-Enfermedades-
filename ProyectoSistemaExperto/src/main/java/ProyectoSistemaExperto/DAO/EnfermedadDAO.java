@@ -1,23 +1,4 @@
 package ProyectoSistemaExperto.DAO;
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
-/* PROJECT: Sistema Experto
- * MODULE: Data Access Object
- * 
- * CLASS: EnfermedadDAO
- * DESCRIPTION: Class that implementes the pattern DAO that manages enfermedad data persistence
- *              in MySQL database. Implements CRUD operations for Enfermedad and handles
- *              relationships with diseases.
- * 
- * 
- * @author Jhojan Villada
- * @version 1.1.0
- * @since 2025-12-8
- * @lastModified 2025-12-11
- * @since MySQL Connector/J 8.0
-*/
 
 import ProyectoSistemaExperto.models.Enfermedad;
 import java.sql.*;
@@ -25,124 +6,140 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class EnfermedadDAO {
-    
-    /**
-     * Obtiene todas las enfermedades con sus síntomas desde MySQL
-     */
+
+    private Connection connection;
+
+    public EnfermedadDAO() {
+        this.connection = ConexionDB.getConnection();
+    }
+
     public List<Enfermedad> obtenerEnfermedades() {
-        List<Enfermedad> enfermedades = new ArrayList<>();
-        
-        String sql = """
-            SELECT e.id_enfermedad, e.nombre, e.categoria, e.recomendacion
-            FROM enfermedad e
-        """;
-        
-        try (Connection conn = ConexionDB.getConnection();
-             Statement stmt = conn.createStatement();
-             ResultSet rs = stmt.executeQuery(sql)) {
-            
+        List<Enfermedad> lista = new ArrayList<>();
+        String sql = "SELECT * FROM enfermedad";
+
+        try (PreparedStatement ps = connection.prepareStatement(sql);
+             ResultSet rs = ps.executeQuery()) {
+
             while (rs.next()) {
-                int id = rs.getInt("id_enfermedad");
                 String nombre = rs.getString("nombre");
                 String categoria = rs.getString("categoria");
-                String recomendacion = rs.getString("recomendacion");
+                String recStr = rs.getString("recomendacion");
                 
-                // Obtener síntomas de esta enfermedad
-                List<String> sintomas = obtenerSintomasPorEnfermedad(id);
-                
-                // Convertir recomendación a lista
+                // Convertir string de recomendaciones a lista
                 List<String> recomendaciones = new ArrayList<>();
-                for (String r : recomendacion.split(",")) {
-                    recomendaciones.add(r.trim());
+                if(recStr != null && !recStr.isEmpty()) {
+                    for(String r : recStr.split(",")) recomendaciones.add(r.trim());
                 }
-                
-                // Crear objeto Enfermedad
-                Enfermedad enfermedad = new Enfermedad();
-                enfermedad.setIdEnfermedad(id);
-                enfermedad.setNombre(nombre);
-                enfermedad.setCategoria(categoria);
-                enfermedad.setSintomas(sintomas);
-                enfermedad.setRecomendaciones(recomendaciones);
-                
-                enfermedades.add(enfermedad);
+
+                // Obtener síntomas
+                List<String> sintomas = obtenerSintomas(nombre);
+
+                Enfermedad e = new Enfermedad(nombre, sintomas, categoria, recomendaciones);
+                e.setIdEnfermedad(rs.getInt("id_enfermedad"));
+                lista.add(e);
             }
-            
         } catch (SQLException e) {
-            System.err.println("Error obtenerEnfermedades(): " + e.getMessage());
             e.printStackTrace();
         }
-        
-        return enfermedades;
+        return lista;
     }
-    
-    /**
-     * Obtiene los síntomas de una enfermedad específica
-     */
-    private List<String> obtenerSintomasPorEnfermedad(int idEnfermedad) {
+
+    public List<String> obtenerSintomas(String nombreEnfermedad) {
         List<String> sintomas = new ArrayList<>();
-        
         String sql = """
             SELECT s.nombre
             FROM sintoma s
             INNER JOIN enfermedad_sintoma es ON s.id_sintoma = es.id_sintoma
-            WHERE es.id_enfermedad = ?
+            INNER JOIN enfermedad e ON e.id_enfermedad = es.id_enfermedad
+            WHERE e.nombre = ?
         """;
-        
-        try (Connection conn = ConexionDB.getConnection();
-             PreparedStatement pstmt = conn.prepareStatement(sql)) {
-            
-            pstmt.setInt(1, idEnfermedad);
-            ResultSet rs = pstmt.executeQuery();
-            
+
+        try (PreparedStatement ps = connection.prepareStatement(sql)) {
+            ps.setString(1, nombreEnfermedad);
+            ResultSet rs = ps.executeQuery();
             while (rs.next()) {
                 sintomas.add(rs.getString("nombre"));
             }
-            
         } catch (SQLException e) {
-            System.err.println("Error obtenerSintomasPorEnfermedad(): " + e.getMessage());
+            e.printStackTrace();
         }
-        
         return sintomas;
     }
     
-    /**
-     * Obtiene una enfermedad por su nombre
-     */
-    public Enfermedad obtenerPorNombre(String nombre) {
-        String sql = "SELECT * FROM enfermedad WHERE nombre = ?";
-        
-        try (Connection conn = ConexionDB.getConnection();
-             PreparedStatement pstmt = conn.prepareStatement(sql)) {
-            
-            pstmt.setString(1, nombre);
-            ResultSet rs = pstmt.executeQuery();
-            
-            if (rs.next()) {
-                int id = rs.getInt("id_enfermedad");
-                String categoria = rs.getString("categoria");
-                String recomendacion = rs.getString("recomendacion");
+    // --- NUEVO MÉTODO PARA REGISTRAR ---
+    public boolean registrarNuevaEnfermedad(Enfermedad nuevaEnfermedad) {
+        String sqlEnfermedad = "INSERT INTO enfermedad (nombre, categoria, recomendacion) VALUES (?, ?, ?)";
+        String sqlBuscarSintoma = "SELECT id_sintoma FROM sintoma WHERE nombre = ?";
+        String sqlInsertarSintoma = "INSERT INTO sintoma (nombre) VALUES (?)";
+        String sqlRelacion = "INSERT INTO enfermedad_sintoma (id_enfermedad, id_sintoma) VALUES (?, ?)";
+
+        try {
+            // Desactivar autocommit para manejar transacción
+            connection.setAutoCommit(false);
+
+            // 1. Insertar Enfermedad
+            int idEnfermedad = -1;
+            try (PreparedStatement ps = connection.prepareStatement(sqlEnfermedad, Statement.RETURN_GENERATED_KEYS)) {
+                ps.setString(1, nuevaEnfermedad.getNombre());
+                ps.setString(2, nuevaEnfermedad.getCategoria());
+                ps.setString(3, String.join(", ", nuevaEnfermedad.getRecomendaciones()));
+                ps.executeUpdate();
                 
-                List<String> sintomas = obtenerSintomasPorEnfermedad(id);
-                
-                List<String> recomendaciones = new ArrayList<>();
-                for (String r : recomendacion.split(",")) {
-                    recomendaciones.add(r.trim());
+                try (ResultSet rs = ps.getGeneratedKeys()) {
+                    if (rs.next()) idEnfermedad = rs.getInt(1);
                 }
-                
-                Enfermedad enfermedad = new Enfermedad();
-                enfermedad.setIdEnfermedad(id);
-                enfermedad.setNombre(nombre);
-                enfermedad.setCategoria(categoria);
-                enfermedad.setSintomas(sintomas);
-                enfermedad.setRecomendaciones(recomendaciones);
-                
-                return enfermedad;
             }
-            
+
+            if (idEnfermedad == -1) throw new SQLException("No se pudo obtener ID de la enfermedad.");
+
+            // 2. Procesar Síntomas
+            for (String nombreSintoma : nuevaEnfermedad.getSintomas()) {
+                int idSintoma = -1;
+                nombreSintoma = nombreSintoma.toLowerCase().trim();
+
+                // a) Buscar si existe
+                try (PreparedStatement psBuscar = connection.prepareStatement(sqlBuscarSintoma)) {
+                    psBuscar.setString(1, nombreSintoma);
+                    try (ResultSet rs = psBuscar.executeQuery()) {
+                        if (rs.next()) idSintoma = rs.getInt(1);
+                    }
+                }
+
+                // b) Si no existe, insertar
+                if (idSintoma == -1) {
+                    try (PreparedStatement psInsert = connection.prepareStatement(sqlInsertarSintoma, Statement.RETURN_GENERATED_KEYS)) {
+                        psInsert.setString(1, nombreSintoma);
+                        psInsert.executeUpdate();
+                        try (ResultSet rs = psInsert.getGeneratedKeys()) {
+                            if (rs.next()) idSintoma = rs.getInt(1);
+                        }
+                    }
+                }
+
+                // c) Crear relación
+                try (PreparedStatement psRel = connection.prepareStatement(sqlRelacion)) {
+                    psRel.setInt(1, idEnfermedad);
+                    psRel.setInt(2, idSintoma);
+                    psRel.executeUpdate();
+                }
+            }
+
+            // Confirmar transacción
+            connection.commit();
+            return true;
+
         } catch (SQLException e) {
-            System.err.println("Error obtenerPorNombre(): " + e.getMessage());
+            try {
+                connection.rollback(); // Deshacer cambios si algo falla
+            } catch (SQLException ex) {
+                ex.printStackTrace();
+            }
+            System.err.println("Error registrando enfermedad: " + e.getMessage());
+            return false;
+        } finally {
+            try {
+                connection.setAutoCommit(true); // Restaurar estado normal
+            } catch (SQLException e) { e.printStackTrace(); }
         }
-        
-        return null;
     }
 }
