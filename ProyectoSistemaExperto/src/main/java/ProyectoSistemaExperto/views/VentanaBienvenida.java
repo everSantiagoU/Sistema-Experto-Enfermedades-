@@ -46,6 +46,8 @@ public class VentanaBienvenida extends JFrame {
         btnPaciente.addActionListener(e -> new RegistroPaciente().setVisible(true));
 
         btnDiagnostico.addActionListener(e -> new VentanaDiagnostico().setVisible(true));
+        
+        btnHistorial.addActionListener(e -> new VentanaHistorial().setVisible(true));
 
         btnSalir.addActionListener(e -> System.exit(0));
     }

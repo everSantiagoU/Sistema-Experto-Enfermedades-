@@ -1,10 +1,5 @@
 package ProyectoSistemaExperto.DAO;
 
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
-
 import ProyectoSistemaExperto.models.Diagnostico;
 import ProyectoSistemaExperto.models.Paciente;
 import ProyectoSistemaExperto.models.Enfermedad;
@@ -18,7 +13,6 @@ public class DiagnosticoDAO {
     private Connection connection;
 
     public DiagnosticoDAO() {
-        // Asegúrate de que ConexionDB tenga las credenciales correctas (appuser)
         this.connection = ConexionDB.getConnection();
     }
 
@@ -26,13 +20,11 @@ public class DiagnosticoDAO {
      * Guarda diagnóstico en MySQL
      */
     public boolean guardar(Diagnostico d) {
-        // Usamos subconsultas para obtener los IDs basándonos en los nombres
         String sql = "INSERT INTO diagnostico(id_paciente, id_enfermedad) " +
-                "VALUES ((SELECT id_paciente FROM paciente WHERE nombre = ? LIMIT 1), " +
-                "(SELECT id_enfermedad FROM enfermedad WHERE nombre = ? LIMIT 1))";
+                "VALUES (?, (SELECT id_enfermedad FROM enfermedad WHERE nombre = ? LIMIT 1))";
 
         try (PreparedStatement st = connection.prepareStatement(sql)) {
-            st.setString(1, d.getPaciente().getNombre());
+            st.setInt(1, d.getPaciente().getIdPaciente()); // Usamos ID directo del objeto
             st.setString(2, d.getNombreEnfermedad().getNombre());
             st.executeUpdate();
             return true;
@@ -44,97 +36,72 @@ public class DiagnosticoDAO {
     }
 
     /**
-     * Obtiene diagnósticos por nombre de paciente
+     * Obtiene historial por ID de Paciente (Para la tabla de historial)
      */
-    public List<Diagnostico> obtenerPorPaciente(String nombrePaciente) {
+    public List<Diagnostico> obtenerPorIdPaciente(int idPaciente) {
         List<Diagnostico> lista = new ArrayList<>();
 
-        String sql = "SELECT d.fecha, e.nombre, e.categoria, e.recomendacion " +
+        String sql = "SELECT d.fecha, e.nombre, e.categoria, e.recomendacion, p.nombre as nombre_paciente, p.edad " +
                 "FROM diagnostico d " +
                 "JOIN paciente p ON p.id_paciente = d.id_paciente " +
                 "JOIN enfermedad e ON e.id_enfermedad = d.id_enfermedad " +
-                "WHERE p.nombre = ?";
+                "WHERE p.id_paciente = ? " +
+                "ORDER BY d.fecha DESC"; // Ordenado por fecha reciente
 
         try {
             PreparedStatement st = connection.prepareStatement(sql);
-            st.setString(1, nombrePaciente);
-
+            st.setInt(1, idPaciente);
             ResultSet rs = st.executeQuery();
 
             while (rs.next()) {
                 List<String> recomendaciones = splitRecomendaciones(rs.getString("recomendacion"));
-                
-                // AHORA SÍ FUNCIONA: Usamos el constructor vacío y setters
+
                 Enfermedad enf = new Enfermedad();
                 enf.setNombre(rs.getString("nombre"));
                 enf.setCategoria(rs.getString("categoria"));
                 enf.setRecomendaciones(recomendaciones);
-                // No seteamos síntomas porque la consulta no los trae, queda la lista vacía por defecto
 
-                Paciente p = new Paciente(nombrePaciente, 0, new ArrayList<>());
+                Paciente p = new Paciente(rs.getString("nombre_paciente"), rs.getInt("edad"), new ArrayList<>());
+                p.setIdPaciente(idPaciente);
 
                 Diagnostico diag = new Diagnostico(
-                        p,
-                        enf,
-                        rs.getString("categoria"),
-                        new ArrayList<>(), // Síntomas del diagnóstico (vacío por ahora)
-                        recomendaciones
+                        p, enf, rs.getString("categoria"), new ArrayList<>(), recomendaciones
                 );
+                // Insertamos la fecha real de la BD (si tu modelo Diagnostico lo permite, si no usa current)
+                // diag.setFecha(rs.getTimestamp("fecha").toLocalDateTime()); 
                 lista.add(diag);
             }
-
             rs.close();
             st.close();
-
         } catch (Exception e) {
-            System.err.println("ERROR obtenerPorPaciente(): " + e.getMessage());
-            e.printStackTrace();
+            System.err.println("ERROR obtenerPorIdPaciente(): " + e.getMessage());
         }
-
         return lista;
     }
 
     /**
-     * Obtiene todos los diagnósticos
+     * Obtiene TODOS los diagnósticos (Para Estadísticas)
      */
-    public List<Diagnostico> obtenerDiagnosticos() {
+    public List<Diagnostico> obtenerTodos() {
         List<Diagnostico> lista = new ArrayList<>();
+        String sql = "SELECT e.nombre, e.categoria FROM diagnostico d " +
+                     "JOIN enfermedad e ON e.id_enfermedad = d.id_enfermedad";
 
-        String sql = "SELECT d.fecha, e.nombre, e.categoria, e.recomendacion " +
-                "FROM diagnostico d " +
-                "JOIN enfermedad e ON e.id_enfermedad = d.id_enfermedad";
-
-        try {
-            PreparedStatement st = connection.prepareStatement(sql);
-            ResultSet rs = st.executeQuery();
+        try (PreparedStatement st = connection.prepareStatement(sql);
+             ResultSet rs = st.executeQuery()) {
 
             while (rs.next()) {
-                List<String> recomendaciones = splitRecomendaciones(rs.getString("recomendacion"));
-
                 Enfermedad enf = new Enfermedad();
                 enf.setNombre(rs.getString("nombre"));
                 enf.setCategoria(rs.getString("categoria"));
-                enf.setRecomendaciones(recomendaciones);
-
-                Paciente p = new Paciente("Desconocido", 0, new ArrayList<>());
-
-                Diagnostico diag = new Diagnostico(
-                        p,
-                        enf,
-                        rs.getString("categoria"),
-                        new ArrayList<>(),
-                        recomendaciones
-                );
+                // No necesitamos mas datos para las estadisticas basicas
+                
+                Diagnostico diag = new Diagnostico(null, enf, rs.getString("categoria"), null, null);
                 lista.add(diag);
             }
-
-            rs.close();
-            st.close();
-
         } catch (Exception e) {
-            System.err.println("ERROR obtenerDiagnosticos(): " + e.getMessage());
+            System.err.println("ERROR obtenerTodos(): " + e.getMessage());
         }
-
         return lista;
     }
 

@@ -12,7 +12,7 @@ public class Reporte {
 
     /**
      * Función auxiliar para escapar strings que contienen comas o comillas dobles,
-     * siguiendo el estándar CSV (encerrar en comillas dobles y duplicar comillas internas).
+     * siguiendo el estándar CSV.
      */
     private String escapeCSV(String value) {
         if (value == null) return "";
@@ -31,10 +31,6 @@ public class Reporte {
 
     /**
      * Genera un archivo CSV con el historial de diagnósticos proporcionado.
-     *
-     * @param listaDiagnosticos Lista de objetos Diagnostico (usualmente el historial de un paciente).
-     * @param rutaArchivo Ruta completa donde se guardará el archivo CSV (ej: "C:/reports/historial.csv").
-     * @return true si la exportación fue exitosa, false en caso contrario.
      */
     public boolean generarCSV(List<Diagnostico> listaDiagnosticos, String rutaArchivo) throws IOException {
         if (listaDiagnosticos == null || listaDiagnosticos.isEmpty()) {
@@ -45,24 +41,23 @@ public class Reporte {
         // Define el formato de la fecha
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         
-        // Usar try-with-resources para asegurar el cierre de FileWriter y PrintWriter
-        try (FileWriter fileWriter = new FileWriter(rutaArchivo); // ← CORREGIDO: se quitó el "new" extra
+        try (FileWriter fileWriter = new FileWriter(rutaArchivo);
              PrintWriter printWriter = new PrintWriter(fileWriter)) {
 
-            // 1. Escribir encabezados (Headers)
-            String header = "Paciente,Edad,Fecha Diagnóstico,Enfermedad Diagnosticada,Categoría,Síntomas Reportados,Recomendaciones";
+            // 1. Escribir encabezados
+            String header = "Paciente,Edad,Fecha Diagnostico,Enfermedad Diagnosticada,Categoria,Sintomas Reportados,Recomendaciones";
             printWriter.println(header);
 
             // 2. Escribir cada diagnóstico como una fila
             for (Diagnostico d : listaDiagnosticos) {
                 // Formatear la fecha
-                String fechaStr = sdf.format(d.getFecha());
+                String fechaStr = (d.getFecha() != null) ? sdf.format(d.getFecha()) : "";
                 
-                // Unir listas a strings para una celda CSV, separando por '|' para distinguirlo de la coma CSV
-                String sintomasStr = String.join(" | ", d.getSintomasIngresados());
+                // CORRECCIÓN AQUÍ: Usamos getSintomasEnfermedad() en lugar de getSintomasIngresados()
+                String sintomasStr = String.join(" | ", d.getSintomasEnfermedad());
                 String recomendacionesStr = String.join(" | ", d.getRecomendacionesDiagnostico());
                 
-                // Construir la línea, aplicando la función de escape a cualquier campo que pueda tener comas.
+                // Construir la línea CSV
                 String linea = String.format("%s,%d,%s,%s,%s,%s,%s",
                     escapeCSV(d.getPaciente().getNombre()), 
                     d.getPaciente().getEdad(),
