@@ -4,6 +4,38 @@ package ProyectoSistemaExperto.inferencia;
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
 
+/* PROJECT: Sistema Experto
+ * MODULE: Inference Engine
+ * 
+ * CLASS: MotorInferencia
+ * DESCRIPTION: Core inference engine class that implements the expert system's reasoning
+ *              capabilities. Integrates SWI-Prolog (via JPL) to perform logical inference
+ *              over medical knowledge rules and dynamic facts loaded from MySQL database.
+ *              Provides diagnostic capabilities, symptom matching, and disease categorization
+ *              through Prolog-based rule evaluation.
+ * 
+ * KEY FEATURES:
+ * - Dynamic loading of Prolog rules from resources
+ * - Integration with MySQL data via dynamic fact assertion
+ * - Multiple diagnostic query methods
+ * - Symptom-based disease matching
+ * - Category-based disease filtering
+ * - Chronic disease identification
+ * - Recommendation retrieval
+ * 
+ * ARCHITECTURE:
+ * - Uses JPL (Java Prolog Interface) for Prolog integration
+ * - Maintains dynamic knowledge base separate from static rules
+ * - Supports real-time fact addition/removal
+ * - Thread-safe query execution
+ * 
+ * @author Ever Santiago
+ * @version 1.1.0
+ * @since 2025-12-10
+ * @lastModified 2025-12-11
+ * @dependencies JPL 7.2.0, SWI-Prolog 8.4.0, MySQL Connector/J 8.0
+*/
+
 import ProyectoSistemaExperto.models.Enfermedad;
 import org.jpl7.Query;
 import org.jpl7.Term;

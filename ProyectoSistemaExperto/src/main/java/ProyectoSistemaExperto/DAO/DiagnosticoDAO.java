@@ -1,9 +1,24 @@
 package ProyectoSistemaExperto.DAO;
-
 /*
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
+
+/* PROJECT: Sistema Experto
+ * MODULE: Data Access Object
+ * 
+ * CLASS: DiagnosticoDAO
+ * DESCRIPTION: Class that implementes the pattern DAO that manages diagnosis data persistence
+ *              in MySQL database. Implements CRUD operations for diagnoses and handles
+ *              relationships between Paciente and enfermedad.
+ * 
+ * 
+ * @author Jhojan Villada
+ * @version 1.1.0
+ * @since 2025-12-8
+ * @lastModified 2025-12-11
+ * @since MySQL Connector/J 8.0
+*/
 
 import ProyectoSistemaExperto.models.Diagnostico;
 import ProyectoSistemaExperto.models.Paciente;

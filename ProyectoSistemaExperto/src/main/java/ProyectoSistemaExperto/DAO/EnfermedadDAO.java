@@ -1,9 +1,23 @@
 package ProyectoSistemaExperto.DAO;
-
 /*
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
+/* PROJECT: Sistema Experto
+ * MODULE: Data Access Object
+ * 
+ * CLASS: EnfermedadDAO
+ * DESCRIPTION: Class that implementes the pattern DAO that manages enfermedad data persistence
+ *              in MySQL database. Implements CRUD operations for Enfermedad and handles
+ *              relationships with diseases.
+ * 
+ * 
+ * @author Jhojan Villada
+ * @version 1.1.0
+ * @since 2025-12-8
+ * @lastModified 2025-12-11
+ * @since MySQL Connector/J 8.0
+*/
 
 import ProyectoSistemaExperto.models.Enfermedad;
 import java.sql.*;

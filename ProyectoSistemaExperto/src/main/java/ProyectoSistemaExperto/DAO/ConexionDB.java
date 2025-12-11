@@ -4,6 +4,24 @@ package ProyectoSistemaExperto.DAO;
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
 
+/* PROJECT: Sistema Experto
+ * MODULE: Database Connectivity
+ * 
+ * CLASS: ConexionDB
+ * DESCRIPTION: Provides MySQL database connection management for the expert system
+ * 
+ * This class handles database connectivity with support for environment-based
+ * configuration. It implements a connection factory pattern with automatic
+ * fallback to default values when environment variables or system properties
+ * are not provided.
+ * 
+ * @author Jhojan Villada
+ * @version 1.1.0
+ * @since 2025-12-8
+ * @lastModified 2025-12-11
+ * @since MySQL Connector/J 8.0
+*/
+
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
