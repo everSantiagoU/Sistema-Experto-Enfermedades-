@@ -3,11 +3,9 @@ ProyectoSistemaExperto\views\VentanaDiagnostico.class
 ProyectoSistemaExperto\models\Diagnostico.class
 ProyectoSistemaExperto\DAO\ConexionDB.class
 ProyectoSistemaExperto\inferencia\MotorInferencia.class
-ProyectoSistemaExperto\views\VentanaDiagnostico$DemoEnfermedad.class
 ProyectoSistemaExperto\models\EstadisticaEnfermedad.class
 ProyectoSistemaExperto\models\Paciente.class
 ProyectoSistemaExperto\views\RegistroPaciente.class
 ProyectoSistemaExperto\models\Enfermedad.class
 ProyectoSistemaExperto\DAO\EnfermedadDAO.class
-ProyectoSistemaExperto\inferencia\MainPruebaMI.class
 ProyectoSistemaExperto\views\VentanaBienvenida.class
