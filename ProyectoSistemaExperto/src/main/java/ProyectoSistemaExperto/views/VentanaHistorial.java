@@ -21,9 +21,9 @@ public class VentanaHistorial extends JFrame {
     private JTextField txtIdPaciente;
     private JLabel lblInfoPaciente;
     private JTable tablaHistorial;
-    private JButton btnExportar; // Botón nuevo
+    private JButton btnExportar; 
     
-    // Almacenamos la lista actual para poder exportarla
+
     private List<Diagnostico> diagnosticosActuales = new ArrayList<>();
 
     public VentanaHistorial() {
@@ -33,7 +33,6 @@ public class VentanaHistorial extends JFrame {
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setLayout(new BorderLayout(15, 15));
 
-        // --- PANEL SUPERIOR: BUSCADOR ---
         JPanel panelSuperior = new JPanel(new FlowLayout(FlowLayout.LEFT, 20, 15));
         panelSuperior.setBorder(BorderFactory.createTitledBorder("Consultar Historial de Paciente"));
 
@@ -50,7 +49,6 @@ public class VentanaHistorial extends JFrame {
 
         add(panelSuperior, BorderLayout.NORTH);
 
-        // --- CENTRO: TABLA ---
         String[] columnas = {"Fecha", "Enfermedad", "Categoría", "Tratamiento / Recomendación"};
         tablaHistorial = new JTable(new DefaultTableModel(columnas, 0));
         tablaHistorial.setRowHeight(25);
@@ -59,7 +57,6 @@ public class VentanaHistorial extends JFrame {
         
         add(scroll, BorderLayout.CENTER);
 
-        // --- PANEL INFERIOR: ACCIONES Y ESTADÍSTICAS ---
         JPanel panelInferior = new JPanel(new FlowLayout(FlowLayout.CENTER, 20, 20));
         
         JButton btnEstadisticas = new JButton("VER ESTADÍSTICAS GLOBALES");
@@ -69,7 +66,6 @@ public class VentanaHistorial extends JFrame {
         btnEstadisticas.setCursor(new Cursor(Cursor.HAND_CURSOR));
         btnEstadisticas.setPreferredSize(new Dimension(280, 45));
         
-        // Botón de Exportar (NUEVO)
         btnExportar = new JButton("EXPORTAR REPORTE CSV");
         btnExportar.setFont(new Font("SansSerif", Font.BOLD, 14));
         btnExportar.setBackground(new Color(0, 102, 204)); // Azul
@@ -83,7 +79,6 @@ public class VentanaHistorial extends JFrame {
         
         add(panelInferior, BorderLayout.SOUTH);
 
-        // --- EVENTOS ---
         btnBuscar.addActionListener(e -> buscarHistorial());
         btnEstadisticas.addActionListener(e -> mostrarEstadisticas());
         btnExportar.addActionListener(e -> exportarReporte());
@@ -96,7 +91,6 @@ public class VentanaHistorial extends JFrame {
 
             int id = Integer.parseInt(textoId);
             
-            // 1. Buscar Paciente
             PacienteDAO pDao = new PacienteDAO();
             Paciente p = pDao.obtenerPorId(id);
 
@@ -111,7 +105,6 @@ public class VentanaHistorial extends JFrame {
             lblInfoPaciente.setText("✅ Historial de: " + p.getNombre() + " (" + p.getEdad() + " años)");
             lblInfoPaciente.setForeground(new Color(0, 102, 0));
 
-            // 2. Buscar Diagnósticos
             DiagnosticoDAO dDao = new DiagnosticoDAO();
             diagnosticosActuales = dDao.obtenerPorIdPaciente(id); // Guardamos en la variable de clase
             
@@ -134,7 +127,6 @@ public class VentanaHistorial extends JFrame {
         model.setRowCount(0);
 
         for (Diagnostico d : lista) {
-            // Formatear fecha simple si existe
             String fecha = (d.getFecha() != null) ? d.getFecha().toLocalDate().toString() : "N/A";
             
             model.addRow(new Object[]{
@@ -157,12 +149,10 @@ public class VentanaHistorial extends JFrame {
             return;
         }
 
-        // Configurar selector de archivos
         JFileChooser fileChooser = new JFileChooser();
         fileChooser.setDialogTitle("Guardar Historial Clínico");
         fileChooser.setFileFilter(new FileNameExtensionFilter("Archivos CSV (*.csv)", "csv"));
         
-        // Nombre sugerido: Historial_NombrePaciente.csv
         String nombreSugerido = "Historial_Paciente_" + txtIdPaciente.getText() + ".csv";
         fileChooser.setSelectedFile(new File(nombreSugerido));
 
@@ -172,7 +162,7 @@ public class VentanaHistorial extends JFrame {
             File fileToSave = fileChooser.getSelectedFile();
             String ruta = fileToSave.getAbsolutePath();
             
-            // Asegurar extensión .csv
+            // .csv
             if (!ruta.toLowerCase().endsWith(".csv")) {
                 ruta += ".csv";
             }
@@ -204,7 +194,6 @@ public class VentanaHistorial extends JFrame {
             return;
         }
 
-        // Estadísticas con Streams
         Map<String, Long> conteoEnfermedades = todos.stream()
             .collect(Collectors.groupingBy(d -> d.getNombreEnfermedad().getNombre(), Collectors.counting()));
 

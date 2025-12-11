@@ -39,9 +39,7 @@ public class VentanaBienvenida extends JFrame {
 
         add(panelBotones, BorderLayout.CENTER);
 
-        // =====================================================
-        // EVENTOS
-        // =====================================================
+        // Eventos
 
         btnPaciente.addActionListener(e -> new RegistroPaciente().setVisible(true));
 

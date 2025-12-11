@@ -9,12 +9,12 @@ package ProyectoSistemaExperto.inferencia;
  * 
  * CLASS: MotorInferencia
  * DESCRIPTION: Core inference engine class that implements the expert system's reasoning
- *              capabilities. Integrates SWI-Prolog (via JPL) to perform logical inference
+ *              capabilities. Integrates SWI-Prolog via JPL to perform logical inference
  *              over medical knowledge rules and dynamic facts loaded from MySQL database.
- *              Provides diagnostic capabilities, symptom matching, and disease categorization
- *              through Prolog-based rule evaluation.
+ *              Provides diagnostic capabilities symptom matching and disease categorization
+ *              through Prolog based rule evaluation
  * 
- * KEY FEATURES:
+ * 
  * - Dynamic loading of Prolog rules from resources
  * - Integration with MySQL data via dynamic fact assertion
  * - Multiple diagnostic query methods
@@ -23,14 +23,14 @@ package ProyectoSistemaExperto.inferencia;
  * - Chronic disease identification
  * - Recommendation retrieval
  * 
- * ARCHITECTURE:
- * - Uses JPL (Java Prolog Interface) for Prolog integration
+ * ARCHITECTURE
+ * - Uses JPL Java Prolog Interface for Prolog integration
  * - Maintains dynamic knowledge base separate from static rules
  * - Supports real-time fact addition/removal
  * - Thread-safe query execution
  * 
- * @author Ever Santiago
- * @version 1.1.0
+ * @author Ever Santiago Uribe
+ * @version 1.5.0
  * @since 2025-12-10
  * @lastModified 2025-12-11
  * @dependencies JPL 7.2.0, SWI-Prolog 8.4.0, MySQL Connector/J 8.0
@@ -50,16 +50,12 @@ public class MotorInferencia {
     private String rutaReglas;
     private boolean cargadoConsulta = false;
 
-    // ============================================
-    // CONSTRUCTOR
-    // ============================================
+    // Constructor
     public MotorInferencia() {
         cargarReglas();
     }
 
-    // ============================================
-    // Cargar reglas.pl desde resources
-    // ============================================
+    // Load reglas.pl from resources
     public void cargarReglas() {
         try {
             URL rulesURL = getClass().getClassLoader().getResource("reglas.pl");
@@ -88,19 +84,17 @@ public class MotorInferencia {
         }
     }
 
-    // ============================================
-    // Carga dinámica de hechos desde MySQL
-    // ============================================
+    // Dynamic load of data (hechos)from MySQL
     public void agregarEnfermedad(Enfermedad e) {
         try {
-            // 1. agregar enfermedad(nombre, categoria).
+            // add enfermedad(nombre, categoria).
             String consulta1 = String.format(
                     "assert(enfermedad('%s','%s')).",
                     e.getNombre(), e.getCategoria()
             );
             new Query(consulta1).hasSolution();
 
-            // 2. agregar sintoma(nombre, enfermedad).
+            // add sintoma(nombre, enfermedad).
             for (String s : e.getSintomas()) {
                 String consulta2 = String.format(
                         "assert(sintoma('%s','%s')).",
@@ -109,7 +103,7 @@ public class MotorInferencia {
                 new Query(consulta2).hasSolution();
             }
 
-            // 3. agregar recomendacion(nombre, ListaRecomendaciones).
+            // add recomendacion(nombre, ListaRecomendaciones).
             String listR = convertirListaProlog(e.getRecomendaciones());
             String consulta3 = String.format(
                     "assert(recomendacion('%s', %s)).",
@@ -122,21 +116,19 @@ public class MotorInferencia {
         }
     }
 
-    // Convierte List<String> a forma Prolog: ['a','b','c']
+    // Converts List<String> to Prolog: ['a','b','c']
     private String convertirListaProlog(List<String> lista) {
         List<String> quoted = new ArrayList<>();
         for (String s : lista) quoted.add("'" + s.trim() + "'");
         return "[" + String.join(",", quoted) + "]";
     }
 
-    // ============================================
-    // CONSULTAS PRINCIPALES DEL MOTOR
-    // ============================================
+    // Principal Queries
 
-    /**
-     * Retorna enfermedades que coinciden con TODOS los síntomas del usuario.
-     * coincide_sintomas(Sintomas, Enfermedad)
-     */
+    
+     // return diseases that match all of the user symptoms
+     // coincide_sintomas(Sintomas, Enfermedad)
+     
     public List<String> diagnosticar(List<String> sintomas) {
         List<String> resultado = new ArrayList<>();
 
@@ -153,9 +145,8 @@ public class MotorInferencia {
         return resultado;
     }
 
-    /**
-     * Retorna enfermedades que pertenecen a una categoría.
-     */
+    // returns a disease that are from a category
+    
     public List<String> diagnosticoPorCategoria(String categoria) {
         List<String> resultado = new ArrayList<>();
 
@@ -169,9 +160,8 @@ public class MotorInferencia {
         return resultado;
     }
 
-    /**
-     * Retorna todas las enfermedades crónicas.
-     */
+     // returns all the cronic diseases
+
     public List<String> enfermedadesCronicas() {
         List<String> lista = new ArrayList<>();
 
@@ -185,9 +175,9 @@ public class MotorInferencia {
         return lista;
     }
 
-    /**
-     * Retorna todas las enfermedades asociadas a un síntoma.
-     */
+
+    // Return all diseases associated with symptom
+
     public List<String> enfermedadesPorSintoma(String sintoma) {
         List<String> lista = new ArrayList<>();
 
@@ -201,9 +191,8 @@ public class MotorInferencia {
         return lista;
     }
 
-    /**
-     * Retorna las recomendaciones de una enfermedad
-     */
+    
+     // return the recomendation for a disease
     public List<String> recomendacion(String enfermedad) {
         List<String> lista = new ArrayList<>();
 
@@ -221,9 +210,8 @@ public class MotorInferencia {
         return lista;
     }
 
-    // ============================================
-    // BORRAR BASE DE HECHOS DINÁMICOS
-    // ============================================
+
+    // Delete dynamic facts (hechos)
     public void limpiarBD() {
         new Query("retractall(enfermedad(_, _)).").hasSolution();
         new Query("retractall(sintoma(_, _)).").hasSolution();

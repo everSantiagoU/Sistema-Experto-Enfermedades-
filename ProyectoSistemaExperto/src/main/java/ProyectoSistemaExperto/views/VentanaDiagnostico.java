@@ -23,23 +23,23 @@ public class VentanaDiagnostico extends JFrame {
     private JTextField txtIdPaciente;
     private JLabel lblNombrePaciente;
     
-    // Lógica
+    // Lógic
     private MotorInferencia motor;
     private List<Enfermedad> todasLasEnfermedades;
     private Paciente pacienteActual; // El paciente al que estamos diagnosticando
 
-    // Constructor por defecto (desde Menú Principal)
+    // Default constructor for principal menu
     public VentanaDiagnostico() {
         this(null); // Llama al constructor principal sin paciente
     }
 
-    // Constructor principal (permite recibir un paciente ya cargado)
+    // Principal constructor it allow to receive a patiente that is alredy laoded
     public VentanaDiagnostico(Paciente paciente) {
         this.pacienteActual = paciente;
         inicializarLogica();
         inicializarInterfaz();
         
-        // Si recibimos un paciente, actualizamos la UI automáticamente
+        // IU is updatedt automatically
         if (pacienteActual != null) {
             txtIdPaciente.setText(String.valueOf(pacienteActual.getIdPaciente()));
             lblNombrePaciente.setText("Paciente: " + pacienteActual.getNombre());
@@ -49,13 +49,13 @@ public class VentanaDiagnostico extends JFrame {
 
     private void inicializarLogica() {
         try {
-            // 1. Cargar enfermedades desde BD
+            // load diseases
             EnfermedadDAO dao = new EnfermedadDAO();
             todasLasEnfermedades = dao.obtenerEnfermedades();
             
-            // 2. Iniciar Motor y cargar conocimientos
+            // start motor and conocimientos
             motor = new MotorInferencia();
-            motor.limpiarBD(); // Limpiamos hechos viejos por si acaso
+            motor.limpiarBD(); // clean
             for (Enfermedad e : todasLasEnfermedades) {
                 motor.agregarEnfermedad(e);
             }
@@ -73,10 +73,10 @@ public class VentanaDiagnostico extends JFrame {
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setLayout(new BorderLayout(10, 10));
 
-        // --- PANEL SUPERIOR: DATOS PACIENTE Y FILTROS ---
+
         JPanel panelSuperior = new JPanel(new GridLayout(2, 1));
         
-        // Fila 1: Buscador de Paciente
+
         JPanel panelPaciente = new JPanel(new FlowLayout(FlowLayout.LEFT));
         panelPaciente.setBorder(BorderFactory.createTitledBorder("Datos del Paciente"));
         
@@ -92,7 +92,6 @@ public class VentanaDiagnostico extends JFrame {
         panelPaciente.add(Box.createHorizontalStrut(20));
         panelPaciente.add(lblNombrePaciente);
         
-        // Fila 2: Filtros de Diagnóstico
         JPanel panelFiltros = new JPanel(new FlowLayout(FlowLayout.LEFT));
         panelFiltros.setBorder(BorderFactory.createTitledBorder("Filtros de Diagnóstico"));
         
@@ -118,12 +117,12 @@ public class VentanaDiagnostico extends JFrame {
         panelSuperior.add(panelFiltros);
         add(panelSuperior, BorderLayout.NORTH);
 
-        // --- PANEL IZQUIERDO: SÍNTOMAS ---
+
         panelSintomas = new JPanel();
-        panelSintomas.setLayout(new GridLayout(0, 1)); // 1 columna, n filas
+        panelSintomas.setLayout(new GridLayout(0, 1)); // 1 column n filas
         panelSintomas.setBorder(BorderFactory.createTitledBorder("Seleccione Síntomas"));
 
-        // Usamos una lista auxiliar para llenar los checkbox 
+
         String[] listadoSintomas = {
             "fiebre", "tos", "dolor_cabeza", "dolor_muscular", "estornudos", 
             "dolor_garganta", "sed", "cansancio", "perdida_peso", 
@@ -142,15 +141,14 @@ public class VentanaDiagnostico extends JFrame {
         scrollSintomas.getVerticalScrollBar().setUnitIncrement(16);
         add(scrollSintomas, BorderLayout.WEST);
 
-        // --- CENTRO: TABLA RESULTADOS ---
         tablaResultados = new JTable(new DefaultTableModel(
                 new Object[]{"Enfermedad", "Categoría", "Coincidencias", "Recomendación"}, 0
         ));
-        tablaResultados.setRowHeight(25); // Filas un poco más altas para leer mejor
+        tablaResultados.setRowHeight(25); 
         JScrollPane scrollTabla = new JScrollPane(tablaResultados);
         add(scrollTabla, BorderLayout.CENTER);
 
-        // --- PANEL INFERIOR: ACCIONES (MODIFICADO) ---
+
         JPanel panelSur = new JPanel(new FlowLayout(FlowLayout.CENTER)); // Centrado
         panelSur.setBorder(BorderFactory.createEmptyBorder(15, 0, 15, 0)); // Margen arriba/abajo
 
@@ -165,7 +163,6 @@ public class VentanaDiagnostico extends JFrame {
         panelSur.add(btnGuardar);
         add(panelSur, BorderLayout.SOUTH);
 
-        // ================= EVENTOS =================
         btnBuscar.addActionListener(e -> buscarPaciente());
         btnDiagnosticar.addActionListener(e -> generarDiagnostico());
         btnGuardar.addActionListener(e -> guardarDiagnosticoBD());
@@ -195,7 +192,7 @@ public class VentanaDiagnostico extends JFrame {
     }
 
     private void generarDiagnostico() {
-        // 1. Obtener síntomas seleccionados
+        // recieve sympthomns selected
         List<String> seleccionados = new ArrayList<>();
         for (Component c : panelSintomas.getComponents()) {
             if (c instanceof JCheckBox) {
@@ -209,14 +206,12 @@ public class VentanaDiagnostico extends JFrame {
             return;
         }
 
-        // 2. Consultar al Motor de Inferencia
         List<String> resultadosMotor = motor.diagnosticar(seleccionados);
+
         
-        // 3. Filtrar por categoría (Java side)
         String catFiltro = (String) comboCategoria.getSelectedItem();
         boolean filtrar = !"Todas".equalsIgnoreCase(catFiltro);
-        
-        // 4. Llenar tabla
+
         DefaultTableModel model = (DefaultTableModel) tablaResultados.getModel();
         model.setRowCount(0); // Limpiar
 
