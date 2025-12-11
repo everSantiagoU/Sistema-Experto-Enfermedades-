@@ -1,4 +1,6 @@
+-- ProyectoSistemaExperto\src\main\resources
 USE sistema_experto;
+
 
 INSERT INTO enfermedad (nombre, categoria, recomendacion) VALUES
 ('Gripe', 'viral', 'Descansar, hidratar, consultar médico'),

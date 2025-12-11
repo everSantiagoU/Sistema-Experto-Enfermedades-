@@ -7,7 +7,7 @@ import java.awt.*;
 import java.text.Normalizer;
 import java.util.*;
 import java.util.List;
-
+    
 public class VentanaDiagnostico extends JFrame {
 
     private JPanel panelSintomas;

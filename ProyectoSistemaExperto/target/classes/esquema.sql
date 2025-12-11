@@ -1,4 +1,6 @@
+-- ProyectoSistemaExperto\src\main\resources
 CREATE DATABASE IF NOT EXISTS sistema_experto;
+
 USE sistema_experto;
 
 -- Tabla enfermedades
