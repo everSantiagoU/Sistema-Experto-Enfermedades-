@@ -1,9 +1,12 @@
 package ProyectoSistemaExperto.inferencia;
+/*
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
+ */
 
 import ProyectoSistemaExperto.models.Enfermedad;
 import org.jpl7.Query;
 import org.jpl7.Term;
-
 import java.io.File;
 import java.net.URL;
 import java.util.ArrayList;
