@@ -57,6 +57,10 @@ public class Diagnostico {
     public LocalDateTime getFecha() {
         return fecha;
     }
+    
+    public void setFecha(java.time.LocalDateTime fecha) {
+        this.fecha = fecha;
+    }
 
     @Override
     public String toString() {
