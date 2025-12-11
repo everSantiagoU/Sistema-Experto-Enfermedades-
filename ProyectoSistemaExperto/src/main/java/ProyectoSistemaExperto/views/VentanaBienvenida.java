@@ -1,0 +1,48 @@
+package ProyectoSistemaExperto.views;
+
+import javax.swing.*;
+import java.awt.*;
+
+public class VentanaBienvenida extends JFrame {
+
+    public VentanaBienvenida() {
+
+        setTitle("Sistema Experto de Diagnostico Medico");
+        setSize(800, 600);
+        setLocationRelativeTo(null); 
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setLayout(new BorderLayout());
+
+        JLabel titulo = new JLabel("Sistema Experto de Diagnostico Medico", SwingConstants.CENTER);
+        titulo.setFont(new Font("SansSerif", Font.BOLD, 40));
+        titulo.setBorder(BorderFactory.createEmptyBorder(20, 10, 20, 10));
+        add(titulo, BorderLayout.NORTH);
+
+        JPanel panelBotones = new JPanel();
+        panelBotones.setLayout(new GridLayout(5, 1, 10, 10));
+        panelBotones.setBorder(BorderFactory.createEmptyBorder(20, 100, 20, 100));
+
+        JButton btnPaciente = new JButton("Registrar Paciente");
+        JButton btnDiagnostico = new JButton("Generar Diagnostico");
+        JButton btnHistorial = new JButton("Historial de Diagnosticos");
+        JButton btnSalir = new JButton("Salir del sistema");
+
+        panelBotones.add(btnPaciente);
+        panelBotones.add(btnDiagnostico);
+        panelBotones.add(btnHistorial);
+        panelBotones.add(btnSalir);
+
+        add(panelBotones, BorderLayout.CENTER);
+
+        // =====================================================
+        // EVENTOS
+        // =====================================================
+
+        btnPaciente.addActionListener(e -> new RegistroPaciente().setVisible(true));
+
+        btnDiagnostico.addActionListener(e -> new VentanaDiagnostico().setVisible(true));
+
+        btnSalir.addActionListener(e -> System.exit(0));
+    }
+}
+

@@ -1,6 +1,12 @@
-ProyectoSistemaExperto\models\PruebaPL.class
+ProyectoSistemaExperto\DAO\ConexionJava.class
+ProyectoSistemasExperto\views\VentanaDiagnostico.class
+ProyectoSistemaExperto\DAO\DiagnosticoDAO.class
+ProyectoSistemasExperto\views\RegistroPaciente.class
 ProyectoSistemaExperto\models\Diagnostico.class
+ProyectoSistemasExperto\views\VentanaBienvenida.class
+ProyectoSistemasExperto\views\ProyectoSistemaExperto.class
+ProyectoSistemasExperto\views\VentanaDiagnostico$DemoEnfermedad.class
 ProyectoSistemaExperto\models\EstadisticaEnfermedad.class
-ProyectoSistemaExperto\models\MainPruebaClases.class
 ProyectoSistemaExperto\models\Paciente.class
 ProyectoSistemaExperto\models\Enfermedad.class
+ProyectoSistemaExperto\DAO\EnfermedadDAO.class

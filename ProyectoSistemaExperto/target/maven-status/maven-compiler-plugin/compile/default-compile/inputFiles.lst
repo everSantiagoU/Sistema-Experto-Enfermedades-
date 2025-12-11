@@ -1,6 +1,11 @@
+C:\Users\ACER\OneDrive\Desktop\ProyectoSistemaExpertoDiagnostico\ProyectoSistemaExperto\src\main\java\ProyectoSistemaExperto\DAO\ConexionJava.java
+C:\Users\ACER\OneDrive\Desktop\ProyectoSistemaExpertoDiagnostico\ProyectoSistemaExperto\src\main\java\ProyectoSistemaExperto\DAO\DiagnosticoDAO.java
+C:\Users\ACER\OneDrive\Desktop\ProyectoSistemaExpertoDiagnostico\ProyectoSistemaExperto\src\main\java\ProyectoSistemaExperto\DAO\EnfermedadDAO.java
 C:\Users\ACER\OneDrive\Desktop\ProyectoSistemaExpertoDiagnostico\ProyectoSistemaExperto\src\main\java\ProyectoSistemaExperto\models\Diagnostico.java
 C:\Users\ACER\OneDrive\Desktop\ProyectoSistemaExpertoDiagnostico\ProyectoSistemaExperto\src\main\java\ProyectoSistemaExperto\models\Enfermedad.java
 C:\Users\ACER\OneDrive\Desktop\ProyectoSistemaExpertoDiagnostico\ProyectoSistemaExperto\src\main\java\ProyectoSistemaExperto\models\EstadisticaEnfermedad.java
-C:\Users\ACER\OneDrive\Desktop\ProyectoSistemaExpertoDiagnostico\ProyectoSistemaExperto\src\main\java\ProyectoSistemaExperto\models\MainPruebaClases.java
 C:\Users\ACER\OneDrive\Desktop\ProyectoSistemaExpertoDiagnostico\ProyectoSistemaExperto\src\main\java\ProyectoSistemaExperto\models\Paciente.java
-C:\Users\ACER\OneDrive\Desktop\ProyectoSistemaExpertoDiagnostico\ProyectoSistemaExperto\src\main\java\ProyectoSistemaExperto\models\PruebaPL.java
+C:\Users\ACER\OneDrive\Desktop\ProyectoSistemaExpertoDiagnostico\ProyectoSistemaExperto\src\main\java\ProyectoSistemasExperto\views\ProyectoSistemaExperto.java
+C:\Users\ACER\OneDrive\Desktop\ProyectoSistemaExpertoDiagnostico\ProyectoSistemaExperto\src\main\java\ProyectoSistemasExperto\views\RegistroPaciente.java
+C:\Users\ACER\OneDrive\Desktop\ProyectoSistemaExpertoDiagnostico\ProyectoSistemaExperto\src\main\java\ProyectoSistemasExperto\views\VentanaBienvenida.java
+C:\Users\ACER\OneDrive\Desktop\ProyectoSistemaExpertoDiagnostico\ProyectoSistemaExperto\src\main\java\ProyectoSistemasExperto\views\VentanaDiagnostico.java
