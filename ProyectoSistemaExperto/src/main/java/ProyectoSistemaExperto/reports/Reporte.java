@@ -1,7 +1,3 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package ProyectoSistemaExperto.reports;
 
 import ProyectoSistemaExperto.models.Diagnostico;
@@ -40,7 +36,7 @@ public class Reporte {
      * @param rutaArchivo Ruta completa donde se guardará el archivo CSV (ej: "C:/reports/historial.csv").
      * @return true si la exportación fue exitosa, false en caso contrario.
      */
-    public boolean generarCSV(List<Diagnostico> listaDiagnosticos, String rutaArchivo) {
+    public boolean generarCSV(List<Diagnostico> listaDiagnosticos, String rutaArchivo) throws IOException {
         if (listaDiagnosticos == null || listaDiagnosticos.isEmpty()) {
             System.err.println("Advertencia: La lista de diagnósticos está vacía. No se generará el archivo.");
             return false;
@@ -50,7 +46,7 @@ public class Reporte {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         
         // Usar try-with-resources para asegurar el cierre de FileWriter y PrintWriter
-        try (FileWriter fileWriter = new new FileWriter(rutaArchivo);
+        try (FileWriter fileWriter = new FileWriter(rutaArchivo); // ← CORREGIDO: se quitó el "new" extra
              PrintWriter printWriter = new PrintWriter(fileWriter)) {
 
             // 1. Escribir encabezados (Headers)
