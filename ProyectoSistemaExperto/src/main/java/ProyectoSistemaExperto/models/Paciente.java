@@ -1,23 +1,22 @@
 package ProyectoSistemaExperto.models;
+
 import java.util.ArrayList;
 import java.util.List;
-/**
- *
- * @author EVER URIBE
- */
+
 public class Paciente {
     private String nombre;
     private int edad;
-    private List<String> sintomasSeleccionados;
+    private List<String> sintomas;
     private List<Diagnostico> historialDiagnosticos;
 
     public Paciente(String nombre, int edad, List<String> sintomas) {
         this.nombre = nombre;
         this.edad = edad;
-        this.sintomasSeleccionados = sintomas;
+        this.sintomas = sintomas == null ? new ArrayList<>() : sintomas;
         this.historialDiagnosticos = new ArrayList<>();
     }
 
+    // Getters y Setters
     public String getNombre() {
         return nombre;
     }
@@ -34,19 +33,33 @@ public class Paciente {
         this.edad = edad;
     }
 
-    public List<String> getSintomasSeleccionados() {
-        return sintomasSeleccionados;
+    public List<String> getSintomas() {
+        return sintomas;
     }
 
-    public void setSintomasSeleccionados(List<String> sintomas) {
-        this.sintomasSeleccionados = sintomas;
-    }
-
-    public void agregarDiagnostico(Diagnostico d) {
-        historialDiagnosticos.add(d);
+    public void setSintomas(List<String> sintomas) {
+        this.sintomas = sintomas;
     }
 
     public List<Diagnostico> getHistorialDiagnosticos() {
         return historialDiagnosticos;
     }
+
+    public void setHistorialDiagnosticos(List<Diagnostico> historialDiagnosticos) {
+        this.historialDiagnosticos = historialDiagnosticos;
+    }
+
+    public void agregarDiagnostico(Diagnostico d) {
+        this.historialDiagnosticos.add(d);
+    }
+
+    @Override
+    public String toString() {
+        return "Paciente{" +
+                "nombre='" + nombre + '\'' +
+                ", edad=" + edad +
+                ", sintomas=" + sintomas +
+                '}';
+    }
 }
+
