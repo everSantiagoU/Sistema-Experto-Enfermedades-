@@ -1,5 +1,5 @@
 
-package ProyectoSistemasExperto.views;
+package ProyectoSistemaExperto.views;
 import com.formdev.flatlaf.FlatLightLaf;
 /**
  *

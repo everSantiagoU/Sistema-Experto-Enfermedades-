@@ -1,5 +1,5 @@
 
-package ProyectoSistemasExperto.views;
+package ProyectoSistemaExperto.views;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
