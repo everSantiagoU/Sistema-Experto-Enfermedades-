@@ -46,7 +46,7 @@ public class DiagnosticoDAO {
                 "JOIN paciente p ON p.id_paciente = d.id_paciente " +
                 "JOIN enfermedad e ON e.id_enfermedad = d.id_enfermedad " +
                 "WHERE p.id_paciente = ? " +
-                "ORDER BY d.fecha DESC"; // Ordenado por fecha reciente
+                "ORDER BY d.fecha DESC";
 
         try {
             PreparedStatement st = connection.prepareStatement(sql);
@@ -67,14 +67,19 @@ public class DiagnosticoDAO {
                 Diagnostico diag = new Diagnostico(
                         p, enf, rs.getString("categoria"), new ArrayList<>(), recomendaciones
                 );
-                // Insertamos la fecha real de la BD (si tu modelo Diagnostico lo permite, si no usa current)
-                // diag.setFecha(rs.getTimestamp("fecha").toLocalDateTime()); 
+                
+                // AHORA SÍ FUNCIONARÁ: Asignamos la fecha real de la base de datos
+                if (rs.getTimestamp("fecha") != null) {
+                    diag.setFecha(rs.getTimestamp("fecha").toLocalDateTime());
+                }
+
                 lista.add(diag);
             }
             rs.close();
             st.close();
         } catch (Exception e) {
             System.err.println("ERROR obtenerPorIdPaciente(): " + e.getMessage());
+            e.printStackTrace();
         }
         return lista;
     }
