@@ -86,7 +86,6 @@ public class DiagnosticoDAO {
                         p, enf, rs.getString("categoria"), new ArrayList<>(), recomendaciones
                 );
                 
-                // AHORA SÍ FUNCIONARÁ: Asignamos la fecha real de la base de datos
                 if (rs.getTimestamp("fecha") != null) {
                     diag.setFecha(rs.getTimestamp("fecha").toLocalDateTime());
                 }

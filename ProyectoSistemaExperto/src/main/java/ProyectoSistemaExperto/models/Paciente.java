@@ -36,7 +36,7 @@ import java.util.List;
 */
 
 public class Paciente {
-    private int idPaciente; // <--- NUEVO CAMPO
+    private int idPaciente; 
     private String nombre;
     private int edad;
     private List<String> sintomasSeleccionados;
@@ -49,7 +49,6 @@ public class Paciente {
         this.historialDiagnosticos = new ArrayList<>();
     }
 
-    // === GETTERS Y SETTERS PARA EL ID ===
     public int getIdPaciente() {
         return idPaciente;
     }
@@ -57,7 +56,6 @@ public class Paciente {
     public void setIdPaciente(int idPaciente) {
         this.idPaciente = idPaciente;
     }
-    // ====================================
 
     public String getNombre() {
         return nombre;

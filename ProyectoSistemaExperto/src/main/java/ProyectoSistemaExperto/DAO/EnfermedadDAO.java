@@ -116,7 +116,6 @@ public class EnfermedadDAO {
                     }
                 }
 
-                // Crear relación
                 try (PreparedStatement psRel = connection.prepareStatement(sqlRelacion)) {
                     psRel.setInt(1, idEnfermedad);
                     psRel.setInt(2, idSintoma);
@@ -124,13 +123,13 @@ public class EnfermedadDAO {
                 }
             }
 
-            // Confirmar transacción
+
             connection.commit();
             return true;
 
         } catch (SQLException e) {
             try {
-                connection.rollback(); // Deshacer cambios si algo falla
+                connection.rollback(); 
             } catch (SQLException ex) {
                 ex.printStackTrace();
             }
@@ -138,7 +137,7 @@ public class EnfermedadDAO {
             return false;
         } finally {
             try {
-                connection.setAutoCommit(true); // Restaurar estado normal
+                connection.setAutoCommit(true); 
             } catch (SQLException e) { e.printStackTrace(); }
         }
     }
@@ -167,7 +166,6 @@ public class EnfermedadDAO {
         if (nombre.isEmpty()) return false;
 
         try {
-            // 1. Verificar si ya existe para no duplicar
             try (PreparedStatement ps = connection.prepareStatement(sqlCheck)) {
                 ps.setString(1, nombre);
                 try (ResultSet rs = ps.executeQuery()) {
@@ -175,7 +173,6 @@ public class EnfermedadDAO {
                 }
             }
             
-            // 2. Insertar
             try (PreparedStatement ps = connection.prepareStatement(sqlInsert)) {
                 ps.setString(1, nombre);
                 ps.executeUpdate();

@@ -8,30 +8,28 @@ public class VentanaBienvenida extends JFrame {
     public VentanaBienvenida() {
 
         setTitle("Sistema Experto de Diagnostico Medico");
-        setSize(800, 700); // Un poco más alto para que quepan los botones
+        setSize(800, 700); 
         setLocationRelativeTo(null); 
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLayout(new BorderLayout());
 
-        JLabel titulo = new JLabel("Sistema Experto de Diagnóstico Médico", SwingConstants.CENTER);
+        JLabel titulo = new JLabel("Sistema Experto de Diagnostico Medico", SwingConstants.CENTER);
         titulo.setFont(new Font("SansSerif", Font.BOLD, 36));
         titulo.setBorder(BorderFactory.createEmptyBorder(20, 10, 20, 10));
         add(titulo, BorderLayout.NORTH);
 
         JPanel panelBotones = new JPanel();
-        // Aumentamos a 6 filas para el nuevo botón
+
         panelBotones.setLayout(new GridLayout(6, 1, 10, 15)); 
         panelBotones.setBorder(BorderFactory.createEmptyBorder(20, 100, 20, 100));
 
-        // Creación de Botones
         JButton btnPaciente = new JButton("Registrar Paciente");
         JButton btnDiagnostico = new JButton("Generar Diagnóstico");
         JButton btnHistorial = new JButton("Historial de Diagnósticos");
-        JButton btnNuevaEnfermedad = new JButton("Agregar Nueva Enfermedad"); // Ya lo tenías
-        JButton btnNuevoSintoma = new JButton("Agregar Nuevo Síntoma");     // <--- NUEVO BOTÓN
+        JButton btnNuevaEnfermedad = new JButton("Agregar Nueva Enfermedad"); 
+        JButton btnNuevoSintoma = new JButton("Agregar Nuevo Síntoma");     
         JButton btnSalir = new JButton("Salir del sistema");
 
-        // Estilo opcional para diferenciar las acciones de gestión
         Font fontNormal = new Font("SansSerif", Font.PLAIN, 16);
         Font fontGestion = new Font("SansSerif", Font.BOLD, 16);
         
@@ -39,29 +37,23 @@ public class VentanaBienvenida extends JFrame {
         btnDiagnostico.setFont(fontNormal);
         btnHistorial.setFont(fontNormal);
         
-        // Resaltar botones de "Administración/Aprendizaje"
         btnNuevaEnfermedad.setFont(fontGestion);
-        btnNuevaEnfermedad.setForeground(new Color(0, 102, 0)); // Verde oscuro
+        btnNuevaEnfermedad.setForeground(new Color(0, 102, 0)); 
         
         btnNuevoSintoma.setFont(fontGestion);
-        btnNuevoSintoma.setForeground(new Color(0, 102, 0)); // Verde oscuro
+        btnNuevoSintoma.setForeground(new Color(0, 102, 0)); 
 
         btnSalir.setFont(fontNormal);
         btnSalir.setForeground(Color.RED);
 
-        // Añadir al panel en orden
         panelBotones.add(btnPaciente);
         panelBotones.add(btnDiagnostico);
         panelBotones.add(btnHistorial);
         panelBotones.add(btnNuevaEnfermedad);
-        panelBotones.add(btnNuevoSintoma); // Añadimos el nuevo
+        panelBotones.add(btnNuevoSintoma); 
         panelBotones.add(btnSalir);
 
         add(panelBotones, BorderLayout.CENTER);
-
-        // =====================================================
-        // EVENTOS
-        // =====================================================
 
         btnPaciente.addActionListener(e -> new RegistroPaciente().setVisible(true));
 
@@ -71,7 +63,6 @@ public class VentanaBienvenida extends JFrame {
         
         btnNuevaEnfermedad.addActionListener(e -> new VentanaNuevaEnfermedad().setVisible(true));
         
-        // Evento del nuevo botón
         btnNuevoSintoma.addActionListener(e -> new VentanaNuevoSintoma().setVisible(true));
 
         btnSalir.addActionListener(e -> System.exit(0));

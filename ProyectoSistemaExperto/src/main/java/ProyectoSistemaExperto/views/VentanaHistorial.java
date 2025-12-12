@@ -95,18 +95,18 @@ public class VentanaHistorial extends JFrame {
             Paciente p = pDao.obtenerPorId(id);
 
             if (p == null) {
-                lblInfoPaciente.setText("❌ Paciente no encontrado.");
+                lblInfoPaciente.setText("Paciente no encontrado.");
                 lblInfoPaciente.setForeground(Color.RED);
                 limpiarTabla();
                 btnExportar.setEnabled(false);
                 return;
             }
 
-            lblInfoPaciente.setText("✅ Historial de: " + p.getNombre() + " (" + p.getEdad() + " años)");
+            lblInfoPaciente.setText("Historial de: " + p.getNombre() + " (" + p.getEdad() + " años)");
             lblInfoPaciente.setForeground(new Color(0, 102, 0));
 
             DiagnosticoDAO dDao = new DiagnosticoDAO();
-            diagnosticosActuales = dDao.obtenerPorIdPaciente(id); // Guardamos en la variable de clase
+            diagnosticosActuales = dDao.obtenerPorIdPaciente(id); 
             
             llenarTabla(diagnosticosActuales);
 
@@ -114,7 +114,7 @@ public class VentanaHistorial extends JFrame {
                 JOptionPane.showMessageDialog(this, "El paciente existe pero no tiene diagnósticos registrados.");
                 btnExportar.setEnabled(false);
             } else {
-                btnExportar.setEnabled(true); // Habilitamos el botón exportar
+                btnExportar.setEnabled(true); 
             }
 
         } catch (NumberFormatException ex) {
@@ -201,16 +201,16 @@ public class VentanaHistorial extends JFrame {
             .collect(Collectors.groupingBy(d -> d.getCategoriaEnfermedad(), Collectors.counting()));
             
         StringBuilder sb = new StringBuilder();
-        sb.append("=== ESTADÍSTICAS GLOBALES DEL SISTEMA ===\n\n");
+        sb.append(" ESTADÍSTICAS GLOBALES DEL SISTEMA \n\n");
         sb.append("Total de Diagnósticos: ").append(todos.size()).append("\n\n");
         
-        sb.append("--- Top Enfermedades ---\n");
+        sb.append(" Top Enfermedades \n");
         conteoEnfermedades.entrySet().stream()
             .sorted((e1, e2) -> e2.getValue().compareTo(e1.getValue()))
             .limit(5)
             .forEach(e -> sb.append("• ").append(e.getKey()).append(": ").append(e.getValue()).append("\n"));
 
-        sb.append("\n--- Categorías Frecuentes ---\n");
+        sb.append("\n Categorías Frecuentes \n");
         conteoCategorias.entrySet().stream()
             .sorted((e1, e2) -> e2.getValue().compareTo(e1.getValue()))
             .forEach(e -> sb.append("• ").append(e.getKey()).append(": ").append(e.getValue()).append("\n"));

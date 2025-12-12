@@ -12,7 +12,7 @@ import com.formdev.flatlaf.FlatLightLaf;
  */
 public class ProyectoSistemaExperto {
     public static void main(String[] args) {
-        FlatLightLaf.setup(); // activa apariencia FlatLaf
+        FlatLightLaf.setup(); // activa apariencia de la lib flatlaf
 
         java.awt.EventQueue.invokeLater(() -> {
             new VentanaBienvenida().setVisible(true);

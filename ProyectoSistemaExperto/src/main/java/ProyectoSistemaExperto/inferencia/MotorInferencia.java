@@ -50,7 +50,7 @@ public class MotorInferencia {
     private String rutaReglas;
     private boolean cargadoConsulta = false;
 
-    // Constructor
+    // constructor
     public MotorInferencia() {
         cargarReglas();
     }

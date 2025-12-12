@@ -23,17 +23,14 @@ public class VentanaNuevaEnfermedad extends JFrame {
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setLayout(new BorderLayout(15, 15));
 
-        // Título
         JLabel lblTitulo = new JLabel("Registrar Nueva Enfermedad", SwingConstants.CENTER);
         lblTitulo.setFont(new Font("SansSerif", Font.BOLD, 20));
         lblTitulo.setBorder(BorderFactory.createEmptyBorder(15, 0, 0, 0));
         add(lblTitulo, BorderLayout.NORTH);
 
-        // Panel Central (Formulario)
         JPanel panelForm = new JPanel(new GridLayout(4, 1, 10, 10));
         panelForm.setBorder(BorderFactory.createEmptyBorder(10, 30, 10, 30));
 
-        // 1. Nombre y Categoría
         JPanel p1 = new JPanel(new GridLayout(2, 2, 10, 5));
         p1.add(new JLabel("Nombre de la Enfermedad:"));
         txtNombre = new JTextField();
@@ -43,7 +40,6 @@ public class VentanaNuevaEnfermedad extends JFrame {
         comboCategoria = new JComboBox<>(new String[]{"viral", "bacteriana", "crónica", "alergia", "otra"});
         p1.add(comboCategoria);
         
-        // 2. Síntomas
         JPanel p2 = new JPanel(new BorderLayout(5, 5));
         p2.add(new JLabel("Síntomas (separados por coma):"), BorderLayout.NORTH);
         txtSintomas = new JTextArea(4, 20);
@@ -53,7 +49,6 @@ public class VentanaNuevaEnfermedad extends JFrame {
         lblNota.setForeground(Color.GRAY);
         p2.add(lblNota, BorderLayout.SOUTH);
 
-        // 3. Recomendaciones
         JPanel p3 = new JPanel(new BorderLayout(5, 5));
         p3.add(new JLabel("Tratamiento / Recomendaciones:"), BorderLayout.NORTH);
         txtRecomendaciones = new JTextArea(4, 20);
@@ -66,7 +61,6 @@ public class VentanaNuevaEnfermedad extends JFrame {
         
         add(panelForm, BorderLayout.CENTER);
 
-        // Botón Guardar
         JPanel panelSur = new JPanel(new FlowLayout(FlowLayout.CENTER));
         panelSur.setBorder(BorderFactory.createEmptyBorder(10, 0, 20, 0));
         
@@ -84,7 +78,6 @@ public class VentanaNuevaEnfermedad extends JFrame {
     }
 
     private void guardarEnfermedad() {
-        // Validaciones
         String nombre = txtNombre.getText().trim();
         String sintomasRaw = txtSintomas.getText().trim();
         String recomendacionesRaw = txtRecomendaciones.getText().trim();
@@ -95,15 +88,12 @@ public class VentanaNuevaEnfermedad extends JFrame {
             return;
         }
 
-        // Procesar listas
         List<String> listaSintomas = Arrays.asList(sintomasRaw.split(","));
-        // Limpiar espacios extra
         listaSintomas.replaceAll(String::trim);
         
         List<String> listaRecomendaciones = Arrays.asList(recomendacionesRaw.split(","));
         listaRecomendaciones.replaceAll(String::trim);
 
-        // Crear Objeto
         Enfermedad nueva = new Enfermedad(nombre, listaSintomas, categoria, listaRecomendaciones);
 
         // Guardar en BD

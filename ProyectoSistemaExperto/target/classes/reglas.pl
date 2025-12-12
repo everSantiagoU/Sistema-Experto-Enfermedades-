@@ -15,7 +15,7 @@ diagnostico_categoria(Categoria, Enfermedad) :-
 enfermedades_cronicas(Enfermedad) :-
     enfermedad(Enfermedad, cronica).
 
-% 4. enfermedades_por_sintoma  busca enfermedades por un síntoma
+% 4. enfermedades_por_sintoma busca enfermedades por un síntoma
 enfermedades_por_sintoma(Sintoma, Enfermedad) :-
     sintoma(Sintoma, Enfermedad).
 

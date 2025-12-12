@@ -1,6 +1,6 @@
 package ProyectoSistemaExperto.views;
 
-import ProyectoSistemaExperto.DAO.EnfermedadDAO; // <--- Importamos el DAO de Enfermedades
+import ProyectoSistemaExperto.DAO.EnfermedadDAO; // importamos el DAO de Enfermedades
 import ProyectoSistemaExperto.DAO.PacienteDAO;
 import ProyectoSistemaExperto.models.Paciente;
 
@@ -10,8 +10,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Ventana para registrar un nuevo paciente en la Base de Datos MySQL.
- * Actualizado: Carga dinámica de síntomas.
+ * ventana para registrar un nuevo paciente en la base de datos
+ * carga dinamica de sintomas
  * @author EVER URIBE
  */
 public class RegistroPaciente extends JFrame {
@@ -28,22 +28,15 @@ public class RegistroPaciente extends JFrame {
 
         setLayout(new BorderLayout(15, 15));
 
-        // =======================================================
-        // TÍTULO
-        // =======================================================
         JLabel titulo = new JLabel("Registrar Paciente", SwingConstants.CENTER);
         titulo.setFont(new Font("SansSerif", Font.BOLD, 22));
         titulo.setBorder(BorderFactory.createEmptyBorder(15, 10, 15, 10));
         add(titulo, BorderLayout.NORTH);
 
-        // =======================================================
-        // PANEL CENTRAL
-        // =======================================================
         JPanel panelCentral = new JPanel(new BorderLayout(10, 10));
         panelCentral.setBorder(BorderFactory.createEmptyBorder(10, 30, 10, 30));
         add(panelCentral, BorderLayout.CENTER);
 
-        // ---------------------- DATOS DEL PACIENTE ---------------------
         JPanel panelDatos = new JPanel(new GridLayout(2, 2, 10, 10));
 
         panelDatos.add(new JLabel("Nombre Completo:"));
@@ -56,15 +49,13 @@ public class RegistroPaciente extends JFrame {
 
         panelCentral.add(panelDatos, BorderLayout.NORTH);
 
-        // ---------------------- SÍNTOMAS (DINÁMICO) ---------------------
         JPanel panelSintomas = new JPanel();
         panelSintomas.setLayout(new GridLayout(0, 2, 5, 5));
         panelSintomas.setBorder(BorderFactory.createTitledBorder("Seleccione los síntomas que presenta"));
 
         checkboxes = new ArrayList<>();
 
-        // --- CAMBIO PRINCIPAL AQUÍ ---
-        // En lugar de una lista fija, consultamos la BD
+
         try {
             EnfermedadDAO enfermedadDAO = new EnfermedadDAO();
             List<String> sintomasBD = enfermedadDAO.obtenerTodosLosSintomas();
@@ -89,9 +80,6 @@ public class RegistroPaciente extends JFrame {
         scroll.getVerticalScrollBar().setUnitIncrement(16); 
         panelCentral.add(scroll, BorderLayout.CENTER);
 
-        // =======================================================
-        // BOTONES
-        // =======================================================
         JPanel panelBotones = new JPanel(new FlowLayout(FlowLayout.CENTER, 20, 10));
 
         JButton btnRegistrar = new JButton("Registrar Paciente");
@@ -104,16 +92,13 @@ public class RegistroPaciente extends JFrame {
 
         add(panelBotones, BorderLayout.SOUTH);
 
-        // =======================================================
-        // EVENTOS
-        // =======================================================
+
 
         btnRegistrar.addActionListener(e -> registrarPaciente());
         btnVolver.addActionListener(e -> dispose());
     }
 
     private void registrarPaciente() {
-        // 1. Validar nombre vacío
         String nombre = txtNombre.getText().trim();
         int edad = (int) spEdad.getValue();
 
@@ -122,7 +107,6 @@ public class RegistroPaciente extends JFrame {
             return;
         }
 
-        // 2. Recopilar síntomas seleccionados
         List<String> sintomasSeleccionados = new ArrayList<>();
         for (JCheckBox cb : checkboxes) {
             if (cb.isSelected()) {
@@ -130,16 +114,15 @@ public class RegistroPaciente extends JFrame {
             }
         }
 
-        // 3. Crear el objeto Paciente
         Paciente paciente = new Paciente(nombre, edad, sintomasSeleccionados);
 
-        // 4. Llamar al DAO para guardar en MySQL
+        // llamamos el dao para guardar en mysql
         PacienteDAO dao = new PacienteDAO();
         try {
             int idGenerado = dao.registrar(paciente);
 
             if (idGenerado != -1) {
-                // ÉXITO: Mostrar ID y cerrar ventana
+
                 JOptionPane.showMessageDialog(this,
                         "¡Paciente registrado exitosamente!\n\n" +
                         "• Nombre: " + nombre + "\n" +
@@ -148,18 +131,18 @@ public class RegistroPaciente extends JFrame {
                         "Registro Exitoso",
                         JOptionPane.INFORMATION_MESSAGE);
                 
-                dispose(); // Volver al menú principal
+                dispose(); 
             } else {
-                // ERROR controlado
+                
                 JOptionPane.showMessageDialog(this,
-                        "No se pudo guardar el paciente.\nVerifique la conexión a la base de datos.",
+                        "No se pede guardar el paciente.\nVerifique la conexion a la base de datos.",
                         "Error de Base de Datos",
                         JOptionPane.ERROR_MESSAGE);
             }
         } catch (Exception ex) {
-            // ERROR inesperado
+
             JOptionPane.showMessageDialog(this,
-                    "Ocurrió un error inesperado:\n" + ex.getMessage(),
+                    "Ocurrio un error inesperado:\n" + ex.getMessage(),
                     "Error",
                     JOptionPane.ERROR_MESSAGE);
         }
